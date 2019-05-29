@@ -12,7 +12,7 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(scales)
-#library(viridis)
+library(viridis)
 
 source('scripts/nodeEfficiency.R')
 #source('scripts/nodeDetectionEvent.R')
