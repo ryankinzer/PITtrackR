@@ -11,6 +11,7 @@ library(ggplot2)
 library(lubridate)
 library(PITcleanr)
 library(scales)
+library(WriteXLS)
 #library(viridis)
 
 #source('scripts/nodeEfficiency.R')
