@@ -1,65 +1,160 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
 
-library(shiny)
-#library(tidyverse)
-#library(lubridate)
+header <- dashboardHeader(
+  title = "PITtrackR",
 
-# Define UI for application that draws a histogram
-# Start Server UI ----
-shinyUI(
-  navbarPage(title = div(#div(id = "header-id", "KUS: DFRM Fisheries Data"),
-    div(id = 'logo-id',img(src="NPTlogos2.png", height = 70)),
-    tags$a("DFRM Home",href = 'http://www.nptfisheries.org')),
-    id = "kus_navbar",
-    windowTitle = "PITtrackR",
-    theme = "styles.css",
-    position = "fixed-top",
-    collapsible = TRUE,
-    footer = div(hr(),div(id = "footer-id",
-                 "The data presented in this web application may not be solely collected, managed or owned
-                 by the Nez Perce Tribe. All data should be considered draft and is not guaranteed for
-                 accuracy.  Permission to use the data should be sought from the original collectors and data managers.
-                Citations for the data and R packages used to create this application can be found on the reference tab.")),
-     tabPanel("PITtrackR",
-# Input and Mig Plot ----
-                    fluidPage(
-                      fluidRow(
-                        column(12, align = "center",
-                               h1("PITtrackR")
-                               #textOutput("pittrackr_title")
-                               )
-                      ),
+  tags$li(a(href = 'http://www.nptfisheries.org',
+             img(src = 'NPTlogos2.png',
+                 title = 'Company Home', height = "30px"),
+             style = "padding-top:10px; padding-bottom:10px;"),
+           class = "dropdown")
+)
 
-                      fluidRow(
-                            column(3,
-                                   helpText("Select the species, watershed and return year of interest:"),
-                                   
-                                   radioButtons('pit_spp', h3("Species:"), inline = TRUE,
-                                                choices = c('Chinook', "Bull Trout"),
-                                                selected = 'Chinook'),
-                                  
-                                   selectInput('pit_year', h3("Return Year:"),
-                                               choices = c(2018:year(Sys.Date())),
-                                               selected = year(Sys.Date())),
-                                   
-                                   uiOutput("watershed_menu")
-                                 ),
-                            column(3,
-                                   helpText("Select a single or multiple PIT-tags of interest:"),
-                                   uiOutput("tagid_menu")
-                                  ),
-                            column(6,
-                                   plotOutput("mig_plot", width = "100%")
-                                  )
-                          )
-                      )#,
+side <- dashboardSidebar(
+  sidebarMenu(
+    
+    menuItem("Snake Basin Tag Observations", startExpanded = TRUE,
+             
+             selectInput('pit_year', "Return Year:",
+                         choices = c(2018:year(Sys.Date())),
+                         selected = year(Sys.Date())),       
+
+             div(style="display:inline-block",actionButton("loadData", "Load Data")),
+             #div(style="display:inline-block",textOutput("loaded")),
+             withSpinner(textOutput("loaded")),
+                          
+      menuSubItem("Basin Summary", tabName = 'basin', selected = TRUE),
+      menuSubItem("Watershed Observations", tabName = 'watershed')
+    ),
+    
+    # withBusyIndicatorUI(
+    #   div(style="display:inline-block",
+    #   actionButton(
+    #     "loadData",
+    #     "Load Data",
+    #     class = "btn-primary"
+    #   )
+    #   )
+    # ),
+
+    radioButtons('pit_spp', "Species:", inline = TRUE,
+                choices = c('Chinook', "Bull Trout"),
+                selected = 'Chinook'),
+    
+    uiOutput("watershed_menu"),
+    
+    uiOutput("tagid_menu"),
+    
+    menuItem('Raw Data', startExpanded = TRUE,
+             menuSubItem("Processed Observation Data", tabName = 'prochist_data')
+            # menuSubItem("Chinook PTAGIS Data", tabName = 'chinook_data'),
+            # menuSubItem("Bull Trout PTAGIS Data", tabName = 'bull_data')
+    )
+  )
+  
+) 
+
+
+body <- dashboardBody(
+
+  tabItems(
+    tabItem("basin",
+      fluidRow(
+            column(4,
+                   valueBoxOutput("tagsGRA", width = NULL)
+              ),
+            column(4,
+                   valueBoxOutput("tagsObs", width = NULL)
+              ),
+            column(4,
+                   valueBoxOutput("tagsPercent", width = NULL)
+              )
+          ),
+      fluidRow(
+            column(7,
+                   box(width = NULL, solidHeader = TRUE, status = 'primary',
+                       title = 'Tags observed at each detection site.',
+                       leafletOutput("map", width = '100%', height = 540)
+                       )
+                   ),
+            column(5,
+                   box(width = NULL, solidHeader = TRUE, status = 'primary',
+                       title = 'Tags observed in main watershed groups.',
+                       DT::DTOutput('site_tags')
+                     )
+                   )
+            ),
+      fluidRow(
+          column(6,
+                 box(width = NULL, solidHeader = TRUE, status = 'primary',
+                     title = 'Tags observed at each detection site.',
+                    # title = 'Minimum arrival date to each site.',
+                 plotOutput("basin_tag_plot"))),
+          column(6,
+                 box(width = NULL, solidHeader = TRUE, status = 'primary',
+                     title = 'Travel time to main watershed groups.',
+                 plotOutput('basin_travel'))),
+          column(12,
+                 box(width = NULL, solidHeader = TRUE, status = 'primary',
+                     title = 'Estimated detection efficiencies and tags.',
+                     DT::DTOutput("basin_est_tags")))
+      )
+      ),
+      tabItem("watershed",
+            fluidRow(
+                column(6,
+                       box(width = NULL, solidHeader= TRUE, status = 'primary',
+                           title = 'First arrival date at each site.',
+                           plotOutput("arrival_plot"))),
+                column(6,
+                       box(width = NULL, solidHeader = TRUE, status = 'primary',
+                           title = 'Travel time of through watershed reaches.',
+                           plotOutput("watershed_travel")))
+              ),
+            fluidRow(
+              # column(4,
+              #        box(width = NULL, solidHeader = TRUE, status = 'primary',
+              #            title = 'Tags observed by release location.',
+              #            DT::DTOutput("unique_tags")
+              #        )
+              # ),
+              column(6,
+                     box(width = NULL, solidHeader = TRUE, status = 'primary',
+                         title = 'Tags observed at each site.',
+                         DT::DTOutput("unique_tags_site")
+                     )
+                ),
+              column(6,
+                     box(width = NULL, solidHeader = TRUE, status = 'primary',
+                         title = 'Estimated tags and detection efficiencies.',
+                         DT::DTOutput("watershed_est_tags")
+                     )
+              )
+              ),            
+            fluidRow(
+              column(12,
+                  box(width = NULL, solidHeader = TRUE, status = 'primary', 
+                      title = 'Migratory patters through watershed reaches.',
+                      plotOutput("mig_plot", width = "100%")
+                    )
+                )
+              )
+      ),
+    tabItem('prochist_data',
+            downloadButton('data_export', "Export Data"),
+            DT::DTOutput('raw_data'),style = "height:800px; overflow-y: scroll;overflow-x: scroll;"
+            )
+    )
+  )      
+
+
+dashboardPage(
+  header,
+  side,#dashboardSidebar(disable = TRUE),
+  body
+  )
+
+
+
 # # Data Tabs ----
 #                       hr(),
 #                       tabsetPanel(
@@ -214,6 +309,6 @@ shinyUI(
 #                                  ) # close fluidPage
 #                                ) # close tabPanel for citation
 #                       ) # close tabsetPanel
-               ) # close tabPanel PITtrackR
-  ) # close navbarPage
-) # close server
+#               ) # close tabPanel PITtrackR
+#  ) # close navbarPage
+#) # close server
