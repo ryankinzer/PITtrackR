@@ -14,13 +14,14 @@ library(scales)
 library(WriteXLS)
 #library(viridis)
 
-#source('scripts/nodeEfficiency.R')
-#source('scripts/nodeDetectionEvent.R')
-#source('scripts/estimateSpawnLoc.R')
-source('scripts/aws_keys.R')
-source('scripts/data_loading_fnc.R')
+source('R/aws_keys.R')
+source('R/queryWindowCnts.R')
+source('R/data_loading_fnc.R')
 load("data/config_data_20190531.rda")
-#load('./data/DABOM_map_data.rda')
 
 site_loc <- my_config %>%
   distinct(SiteID, Latitude, Longitude)
+
+# Set amazon pass codes
+
+setKeys()
