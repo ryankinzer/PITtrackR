@@ -131,13 +131,15 @@ function(input, output) {
       mutate(cumsum = cumsum(Count)) %>%
       ggplot() +
       #geom_line(aes(x = Date, y = cumsum, colour = spp), size = 2) +
-      geom_col(aes(x = Date, y = Count, fill = spp), colour = 'black') +
+      #geom_col(aes(x = Date, y = Count, fill = spp), colour = 'black') +
+      geom_area(aes(x = Date, y = Count, fill = spp), colour = 'black') +
       scale_fill_brewer(palette = 'Paired')+
       scale_colour_brewer(palette = 'Set2')+
       facet_wrap(~spp, ncol = 1) +
       labs(x = "Arrival Date",
            y = "Window Count",
-           colour = '') +
+           colour = '',
+           fill = '') +
       theme_bw() +
       theme(legend.position = 'bottom')
   })
@@ -229,7 +231,7 @@ function(input, output) {
       mutate(n = n_distinct(TagID)) %>%
       pull(n)
     
-    o <- spp_dat() %>%
+    o <- dat_all() %>%
       filter(SiteID != "GRA") %>%
       filter(grepl(input$basin_spp, Mark.Species)) %>%
       mutate(n = n_distinct(TagID)) %>%
@@ -367,10 +369,39 @@ function(input, output) {
        left_join(node_order %>%
                    select(Node, Group, SiteID = NodeSite)) %>%
        filter(tagsAtNode != 0) %>%
+       mutate(detEff = round(detEff,2)) %>%
        select(Group, SiteID, Node, `Unique Tags` = tagsAtNode,
-              `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff) 
+              `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff)
    })
    
+   
+   output$basin_mig_plot <- renderPlot({
+     
+     # axis_labs <- dat_all() %>%
+     #   distinct(SiteID, RKMTotal) %>% #changed from Node
+     #   mutate(rkmStart = min(RKMTotal),
+     #          RiverRKM = RKMTotal - rkmStart,
+     #          SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
+     
+     tag_basin <- dat_all() %>%
+       slice(which.max(lastObsDateTime)) %>%
+       select(TagID, loc = Group)
+     
+     dat_all() %>%
+       filter(Mark.Species == input$basin_spp) %>%
+       mutate(Group = ifelse(is.na(Group), 'GRA', Group)) %>%
+       group_by(TagID, Group) %>%
+       slice(which.min(firstObsDateTime)) %>%
+       left_join(tag_basin, by = 'TagID') %>%
+         ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID)) +
+         geom_line() +
+         #scale_color_brewer(palette = 'Set1') +
+       labs(x = 'Observation Date',
+            y = '(RKM)',
+            colour = 'Sub-basin') +
+         theme_bw() +
+         theme(legend.position = 'bottom')
+   })
    
 # Watershed Summary ----
    
@@ -395,32 +426,26 @@ function(input, output) {
    })
    
    
-   spp_dat <- eventReactive(input$pit_spp,{
-     dat_all() %>%
-       filter(Mark.Species == input$pit_spp)
-   })
+   # spp_dat <- eventReactive(input$pit_spp,{
+   #   dat_all() %>%
+   #     filter(Mark.Species == input$pit_spp)
+   # })
    
+   
+   # Get unique tag_ids for selected watershed and species
+   tag_ids <- reactive({
+      dat_all() %>%
+       filter(Mark.Species == input$pit_spp) %>%
+       filter(Group == input$watershed) %>%
+        distinct(TagID)# %>%
+         #pull()
+   })
    
    dat <- reactive({
-     dat_all() %>%
-       filter(Mark.Species == input$pit_spp) %>%
-       filter(Group == input$watershed)
-   })
-   
-   # Get unique tag_ids for inputUI selection
-   tag_ids <- reactive({
-      dat() %>%
-         distinct(TagID) %>%
-         pull()
-   })
-   
-   output$tagid_menu <- renderUI({
-      selectInput('tag_id', "Unique Tag IDs:", tag_ids(), multiple=TRUE, selectize=FALSE, size = 5
-                  )
-   })
-   
-   selected_tag_ids <- reactive({
-      input$tag_id
+     # inner_join(dat_all(),tag_ids(), by = 'TagID') %>%
+        dat_all() %>%
+        filter(Mark.Species == input$pit_spp) %>%
+        filter(Group == input$watershed)
    })
    
    
@@ -448,7 +473,21 @@ function(input, output) {
      
    })
    
+
+   output$tagid_menu <- renderUI({
+     
+     tag_ids <- tag_ids() %>%
+       pull()
+     
+     selectInput('tag_id', "Unique Tag IDs:", tag_ids, multiple=TRUE, selectize=FALSE, size = 5
+     )
+   })
    
+   selected_tag_ids <- reactive({
+     input$tag_id
+   })
+   
+      
    output$mig_plot <- renderPlot({
 
       if(is.null(input$tag_id)){
@@ -458,25 +497,28 @@ function(input, output) {
       tmp_tag <- selected_tag_ids()
 
       axis_labs <- dat() %>%
-         distinct(Node, RKMTotal) %>%
+         distinct(SiteID, RKMTotal) %>% #changed from Node
          mutate(rkmStart = min(RKMTotal),
                 RiverRKM = RKMTotal - rkmStart,
-           RiverRKM = case_when(
-            grepl('B0', Node) ~ RiverRKM - 2,
-            grepl('AO', Node) ~ RiverRKM + 2,
-            TRUE ~ RKMTotal),
-           Node = paste0(Node," (",RiverRKM,")"))
+           # RiverRKM = case_when(
+           #  grepl('B0', Node) ~ RiverRKM - 2,
+           #  grepl('AO', Node) ~ RiverRKM + 2,
+           #  TRUE ~ RKMTotal),
+           SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
 
       dat() %>%
          #dat %>%
          filter(TagID %in% tmp_tag) %>%
+         filter(SiteID != 'GRA') %>%
+        group_by(TagID, SiteID, Migration, Direction) %>% #new
+        slice(which.min(firstObsDateTime)) %>% #new
          ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID, colour = Release.Site.Code), drop = TRUE) +
          #geom_polygon(data = above_weir) +
          geom_line() +
          geom_point() +
          #geom_vline(xintercept = as.numeric(ymd_hms("20180611 15:00:00")), linetype=2)+
          scale_x_datetime(limits = lims, labels = date_format("%d-%b")) +
-         scale_y_continuous(breaks = axis_labs$RKMTotal, labels = axis_labs$Node) +
+         scale_y_continuous(breaks = axis_labs$RKMTotal, labels = axis_labs$SiteID) + #changed from Node
          #scale_y_discrete(drop = FALSE) +
          #scale_colour_manual(values = c("Chinook" = "blue", "Bull Trout" = "red")) +
          scale_colour_brewer(palette = 'Set1') +
@@ -485,13 +527,11 @@ function(input, output) {
          theme(legend.position = 'bottom',
                text = element_text(size = 18)) +
          labs(x = 'Observation Date',
-              y = 'Node (RKM)',
+              y = 'SiteID (RKM)',
               colour = 'Release Site')
       }
    })#, height = 475, width = 700)
    
-   
-
    
 
 # Create Watershed Summary Plots ---- 
@@ -716,6 +756,7 @@ function(input, output) {
        left_join(node_order %>%
                    select(Node, Group, SiteID = NodeSite)) %>%
        filter(tagsAtNode != 0) %>%
+       mutate(detEff = round(detEff,2)) %>%
        select(SiteID, Node, `Unique Tags` = tagsAtNode,
               `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff) 
    })  
@@ -763,25 +804,25 @@ function(input, output) {
   # Raw data
   #--------------------------------
 
-  #rawdat <- reactive({input$rawdata})
-
-  # export_dat <- reactive({
-  # 
-  #   if(rawdat() == 'dat_all'){
-  #     dat_all
-  #   } else
-  # 
-  #   if(rawdat() == 'raw_chs'){
-  #     raw_chs
-  #   } else
-  # 
-  #   if(rawdat() == 'raw_bull'){
-  #     raw_bull
-  #   } else
-  # 
-  #   if(rawdat() == 'detect_hist'){
-  #     detect_hist
-  #   }
+  # rawdat <- reactive({input$rawdata})
+  #  
+  #  export_dat <- reactive({
+  #  
+  #    if(rawdat() == 'Processed Observations'){
+  #      dat_all
+  #    } else
+  #  
+  #    if(rawdat() == 'raw_chs'){
+  #      raw_chs
+  #    } else
+  #  
+  #    if(rawdat() == 'raw_bull'){
+  #      raw_bull
+  #    } else
+  #  
+  #    if(rawdat() == 'detect_hist'){
+  #      detect_hist
+  #    }
   # })
    
   output$raw_data <- DT::renderDataTable({
@@ -799,7 +840,7 @@ function(input, output) {
       paste0("observations","_", Sys.Date(), "_.csv")
     },
     content = function(filename) {
-      write.csv(export_dat(), filename, row.names = FALSE)
+      write.csv(dat_all(), filename, row.names = FALSE)
     }
   )
 
