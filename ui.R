@@ -58,7 +58,10 @@ side <- dashboardSidebar(
                    selected = 'Chinook'),
       uiOutput("watershed_menu"),
       uiOutput("tagid_menu"),
-      menuSubItem("Watershed Reports")
+      menuSubItem("Watershed Reports"),
+      selectInput("pdf_reports", "Watershed Reports:", 
+                  choices = c('Imnaha River'), selected = 'Imnaha River'),
+      downloadButton("reports", label = 'Generate Report')
     ),
     
     menuItem('Raw Data', tabName = 'data') #startExpanded = TRUE,
@@ -139,11 +142,11 @@ body <- dashboardBody(
           column(12,
                  box(width = NULL, solidHeader = TRUE, status = 'primary',
                      title = 'Estimated tags and site detection efficiencies.',
-                     DT::DTOutput("basin_est_tags"))),
-          column(12,
-                 box(width = NULL, solidHeader = TRUE, status = 'primary',
-                     title = 'Migratory time from Lower Granite to sub-basins.',
-                     plotOutput('basin_mig_plot')))
+                     DT::DTOutput("basin_est_tags")))
+          # column(12,
+          #        box(width = NULL, solidHeader = TRUE, status = 'primary',
+          #            title = 'Migratory time from Lower Granite to sub-basins.',
+          #            plotOutput('basin_mig_plot')))
       )
       ),
       tabItem("watershed",

@@ -99,7 +99,8 @@ function(input, output) {
     }
   })
   
-  
+
+# GRA previously tagged plot  
   output$release_grp <- renderPlot({
     dat_all() %>%
       #dat_all %>%
@@ -122,7 +123,7 @@ function(input, output) {
       theme(legend.position = 'bottom')
   })
   
-  
+ # window count plot 
   output$window_plot <- renderPlot({
     window_df() %>%
       filter(grepl(input$basin_spp, spp)) %>%
@@ -144,7 +145,7 @@ function(input, output) {
       theme(legend.position = 'bottom')
   })
   
-  
+# GRA tagged plot  
   output$gra_tagged <- renderPlot({
     dat_all() %>%
       #dat_all %>%
@@ -165,6 +166,7 @@ function(input, output) {
       theme(legend.position = 'none')
   })
   
+# GRA arrival time plot
   output$release_plot <- renderPlot({
     dat_all() %>%
      #dat_all %>%
@@ -191,8 +193,6 @@ function(input, output) {
   
 
 # Snake Basin Tab ----
-  # Create Basin Summary Plots/Tables ----   
-  # use spp_dat()
   
   output$tagsGRA <- renderValueBox({
     n <- dat_all() %>%
@@ -247,7 +247,7 @@ function(input, output) {
   })
   
   
-  # Map Data ----
+# Basin Map Data ----
    map_dat <- eventReactive(input$loadData, {
      dat_all() %>%
        filter(Mark.Species == input$basin_spp) %>%
@@ -256,7 +256,7 @@ function(input, output) {
        ungroup()
    })
    
-   
+# Basin map output   
    output$map <- renderLeaflet({
 
       leaflet(options = leafletOptions(minZoom = 7, doubleClickZoom = FALSE)) %>%
@@ -304,7 +304,8 @@ function(input, output) {
    # 
    # })
    
-   
+# Basin Summaries ----   
+ # Basin unique tags per group table  
    output$site_tags <- DT::renderDT({
      dat_all() %>%
        filter(Mark.Species == input$basin_spp) %>%
@@ -316,7 +317,7 @@ function(input, output) {
               `Unique Tags` = n)
    })  
    
-   
+ # Basin unique tags per site  
    output$basin_tag_plot <- renderPlot({
      dat_all() %>%
        filter(Mark.Species == input$basin_spp) %>%
@@ -330,7 +331,7 @@ function(input, output) {
        theme(legend.position = 'bottom')
    })
    
-   
+ # Basin travel time  
    output$basin_travel <- renderPlot({
      
      tmp2 <- dat_all() %>%
@@ -360,7 +361,7 @@ function(input, output) {
    })
    
    
-   # basin site detection efficiency
+# Basin detection efficiencies
    output$basin_est_tags <- DT::renderDT({
      
      dat_all() %>%
@@ -374,36 +375,36 @@ function(input, output) {
               `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff)
    })
    
+ # Basin migration plot  
+   # output$basin_mig_plot <- renderPlot({
+   #   
+   #   # axis_labs <- dat_all() %>%
+   #   #   distinct(SiteID, RKMTotal) %>% #changed from Node
+   #   #   mutate(rkmStart = min(RKMTotal),
+   #   #          RiverRKM = RKMTotal - rkmStart,
+   #   #          SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
+   #   
+   #   tag_basin <- dat_all() %>%
+   #     slice(which.max(lastObsDateTime)) %>%
+   #     select(TagID, loc = Group)
+   #   
+   #   dat_all() %>%
+   #     filter(Mark.Species == input$basin_spp) %>%
+   #     mutate(Group = ifelse(is.na(Group), 'GRA', Group)) %>%
+   #     group_by(TagID, Group) %>%
+   #     slice(which.min(firstObsDateTime)) %>%
+   #     left_join(tag_basin, by = 'TagID') %>%
+   #       ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID)) +
+   #       geom_line() +
+   #       #scale_color_brewer(palette = 'Set1') +
+   #     labs(x = 'Observation Date',
+   #          y = '(RKM)',
+   #          colour = 'Sub-basin') +
+   #       theme_bw() +
+   #       theme(legend.position = 'bottom')
+   # })
    
-   output$basin_mig_plot <- renderPlot({
-     
-     # axis_labs <- dat_all() %>%
-     #   distinct(SiteID, RKMTotal) %>% #changed from Node
-     #   mutate(rkmStart = min(RKMTotal),
-     #          RiverRKM = RKMTotal - rkmStart,
-     #          SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
-     
-     tag_basin <- dat_all() %>%
-       slice(which.max(lastObsDateTime)) %>%
-       select(TagID, loc = Group)
-     
-     dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
-       mutate(Group = ifelse(is.na(Group), 'GRA', Group)) %>%
-       group_by(TagID, Group) %>%
-       slice(which.min(firstObsDateTime)) %>%
-       left_join(tag_basin, by = 'TagID') %>%
-         ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID)) +
-         geom_line() +
-         #scale_color_brewer(palette = 'Set1') +
-       labs(x = 'Observation Date',
-            y = '(RKM)',
-            colour = 'Sub-basin') +
-         theme_bw() +
-         theme(legend.position = 'bottom')
-   })
-   
-# Watershed Summary ----
+# Watershed Observation Tab ----
    
    watersheds <- reactive({
     w <- dat_all() %>%
@@ -411,7 +412,6 @@ function(input, output) {
           distinct(Group) %>%
           pull()
      
-      #w <- unique(spp_dat()$Group)
       w[!is.na(w)]
    })
    
@@ -420,19 +420,11 @@ function(input, output) {
                   choices = watersheds(),
                   selected = 'ImnahaRiver',
                   multiple = FALSE
-                  #size = 5
-                  #c("Choose one" = "","Imnaha River" = "Imnaha River")
                   )                                  
    })
+
    
-   
-   # spp_dat <- eventReactive(input$pit_spp,{
-   #   dat_all() %>%
-   #     filter(Mark.Species == input$pit_spp)
-   # })
-   
-   
-   # Get unique tag_ids for selected watershed and species
+# Get unique tag_ids for selected watershed and species
    tag_ids <- reactive({
       dat_all() %>%
        filter(Mark.Species == input$pit_spp) %>%
@@ -441,39 +433,16 @@ function(input, output) {
          #pull()
    })
    
+# Watershed and species only data
    dat <- reactive({
      # inner_join(dat_all(),tag_ids(), by = 'TagID') %>%
         dat_all() %>%
         filter(Mark.Species == input$pit_spp) %>%
         filter(Group == input$watershed)
    })
-   
-   
-   output$watershed_travel <- renderPlot({
-    tmp2 <- dat() %>%
-       filter(!is.na(Group)) %>%
-       group_by(TagID, Origin, Group, SiteID) %>%
-       summarise(minObsDate = min(firstObsDateTime)) %>%
-       ungroup() %>%
-       group_by(TagID) %>%
-       mutate(dwnObsDate = lag(minObsDate),
-              Reach = paste0(lag(SiteID)," - ", SiteID),
-              TravelTime = difftime(minObsDate, dwnObsDate, units = 'days'))
-     
-     tmp2 %>%
-       filter(!is.na(TravelTime))%>%
-       ggplot(aes(x = TravelTime, fill = Origin)) +
-       geom_histogram()+
-       scale_fill_brewer(palette = 'Set1') +
-       facet_wrap(~Reach) +
-       labs(x = 'Travel Time (days)',
-            y = 'Observed Tags') +
-       theme_bw() +
-       theme(legend.position = 'bottom')
-     
-   })
-   
 
+
+# Unique Tag Ids
    output$tagid_menu <- renderUI({
      
      tag_ids <- tag_ids() %>%
@@ -486,32 +455,101 @@ function(input, output) {
    selected_tag_ids <- reactive({
      input$tag_id
    })
+
    
+# Watershed Arrival time plot 
+   output$arrival_plot <- renderPlot({
+     dat() %>%
+       group_by(TagID, Mark.Species, Origin, Release.Site.Code, SiteID) %>%
+       slice(which.min(lastObsDateTime)) %>%
+       ggplot(aes(x=lastObsDateTime, fill=Origin)) +
+       geom_histogram(colour = 'black', bins = 100) +
+       #geom_vline(xintercept = as.numeric(ymd_hms("20180611 15:00:00")), linetype=2)+
+       scale_fill_brewer(palette = 'Set1') +
+       #scale_fill_viridis(discrete = TRUE) +
+       #facet_grid(factor(SiteID,levels=c("IR1","IR2","IR3","IR4","IML","IR5"))~Mark.Species,scales="free_y") +
+       facet_grid(SiteID ~ .) +
+       theme_bw() +
+       theme(panel.grid.major=element_blank())+
+       theme(legend.position = 'bottom') +
+       labs(x = "First detection date",
+            y = "Count")
+   })   
+   
+   
+# Watershed travel time plot
+   output$watershed_travel <- renderPlot({
+     tmp2 <- dat() %>%
+       filter(!is.na(Group)) %>%
+       group_by(TagID, Origin, Group, SiteID) %>%
+       summarise(minObsDate = min(firstObsDateTime)) %>%
+       ungroup() %>%
+       group_by(TagID) %>%
+       mutate(dwnObsDate = lag(minObsDate),
+              Reach = paste0(lag(SiteID)," - ", SiteID),
+              TravelTime = difftime(minObsDate, dwnObsDate, units = 'days'))
       
+     tmp2 %>%
+       filter(!is.na(TravelTime))%>%
+       ggplot(aes(x = TravelTime, fill = Origin)) +
+       geom_histogram()+
+       scale_fill_brewer(palette = 'Set1') +
+       facet_wrap(~Reach) +
+       labs(x = 'Travel Time (days)',
+            y = 'Observed Tags') +
+       theme_bw() +
+       theme(legend.position = 'bottom')
+     
+   })
+     
+
+# Watershed unique tags per site
+   output$unique_tags_site <- DT::renderDT({
+     dat() %>%
+       group_by(Mark.Species, Origin, Release.Site.Code, SiteID) %>%
+       summarise(Unique_Tags = n_distinct(TagID)) %>%
+       select(Species = Mark.Species, Origin, `Release Site` = Release.Site.Code, SiteID, `Unique Tags` = Unique_Tags)
+   })
+
+# Watershed Detection Eff.  
+   output$watershed_est_tags <- DT::renderDT({
+     
+     dat() %>%
+       #tmp %>%
+       estNodeEff(node_order = node_order) %>%
+       left_join(node_order %>%
+                   select(Node, Group, SiteID = NodeSite)) %>%
+       filter(tagsAtNode != 0) %>%
+       mutate(detEff = round(detEff,2)) %>%
+       select(SiteID, Node, `Unique Tags` = tagsAtNode,
+              `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff) 
+   })  
+   
+# Watershed Migration Plot
    output$mig_plot <- renderPlot({
-
-      if(is.null(input$tag_id)){
-         return()
-      } else {
-      lims <- c(min(dat()$firstObsDateTime), Sys.time())
-      tmp_tag <- selected_tag_ids()
-
-      axis_labs <- dat() %>%
+     
+     if(is.null(input$tag_id)){
+       return()
+     } else {
+       lims <- c(min(dat()$firstObsDateTime), Sys.time())
+       tmp_tag <- selected_tag_ids()
+       
+       axis_labs <- dat() %>%
          distinct(SiteID, RKMTotal) %>% #changed from Node
          mutate(rkmStart = min(RKMTotal),
                 RiverRKM = RKMTotal - rkmStart,
-           # RiverRKM = case_when(
-           #  grepl('B0', Node) ~ RiverRKM - 2,
-           #  grepl('AO', Node) ~ RiverRKM + 2,
-           #  TRUE ~ RKMTotal),
-           SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
-
-      dat() %>%
+                # RiverRKM = case_when(
+                #  grepl('B0', Node) ~ RiverRKM - 2,
+                #  grepl('AO', Node) ~ RiverRKM + 2,
+                #  TRUE ~ RKMTotal),
+                SiteID = paste0(SiteID," (",RiverRKM,")")) #changed from Node
+       
+       dat() %>%
          #dat %>%
          filter(TagID %in% tmp_tag) %>%
          filter(SiteID != 'GRA') %>%
-        group_by(TagID, SiteID, Migration, Direction) %>% #new
-        slice(which.min(firstObsDateTime)) %>% #new
+         group_by(TagID, SiteID, Migration, Direction) %>% #new
+         slice(which.min(firstObsDateTime)) %>% #new
          ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID, colour = Release.Site.Code), drop = TRUE) +
          #geom_polygon(data = above_weir) +
          geom_line() +
@@ -529,30 +567,11 @@ function(input, output) {
          labs(x = 'Observation Date',
               y = 'SiteID (RKM)',
               colour = 'Release Site')
-      }
-   })#, height = 475, width = 700)
-   
+     }
+   })#, height = 475, width = 700)   
+
    
 
-# Create Watershed Summary Plots ---- 
-   output$arrival_plot <- renderPlot({
-     dat() %>%
-       group_by(TagID, Mark.Species, Origin, Release.Site.Code, SiteID) %>%
-       slice(which.min(lastObsDateTime)) %>%
-       ggplot(aes(x=lastObsDateTime, fill=Origin)) +
-       geom_histogram(colour = 'black', bins = 100) +
-       #geom_vline(xintercept = as.numeric(ymd_hms("20180611 15:00:00")), linetype=2)+
-       scale_fill_brewer(palette = 'Set1') +
-       #scale_fill_viridis(discrete = TRUE) +
-       #facet_grid(factor(SiteID,levels=c("IR1","IR2","IR3","IR4","IML","IR5"))~Mark.Species,scales="free_y") +
-       facet_grid(SiteID ~ .) +
-       theme_bw() +
-       theme(panel.grid.major=element_blank())+
-       theme(legend.position = 'bottom') +
-       labs(x = "First detection date",
-            y = "Count")
-   })
-  #  
   #  # output$nomovement_plot <- renderPlot({
   #  #   #spp_dat() %>%
   #  #     spp_dat %>%
@@ -683,9 +702,7 @@ function(input, output) {
   #  #   plotOutput("traveltime_plot_IR4_IR5", height = 200)
   #  # })
   #  
-  #  #------------------------------------------------
-  #  # Create Summary Tables
-  #  #------------------------------------------------
+# Extra Watershed Summaries ----
   # 
   #  # unique detections
   #  
@@ -696,12 +713,7 @@ function(input, output) {
    #     select(Species = Mark.Species, Origin, `Release Site` = Release.Site.Code, `Unique Tags` = Unique_Tags)
    # })
 
-   output$unique_tags_site <- DT::renderDT({
-   dat() %>%
-     group_by(Mark.Species, Origin, Release.Site.Code, SiteID) %>%
-     summarise(Unique_Tags = n_distinct(TagID)) %>%
-     select(Species = Mark.Species, Origin, `Release Site` = Release.Site.Code, SiteID, `Unique Tags` = Unique_Tags)
-   })
+
    
   #  
   #  output$tag_fate <- renderTable({
@@ -742,28 +754,13 @@ function(input, output) {
   #  })
   #  
   #  
-  #  #------------------------------------------------
-  #  # Estimated tags
-  #  #------------------------------------------------ 
-  # # 
+
+# Estimated tags at Watershed
+
 
    
-   output$watershed_est_tags <- DT::renderDT({
-     
-     dat() %>%
-       #tmp %>%
-       estNodeEff(node_order = node_order) %>%
-       left_join(node_order %>%
-                   select(Node, Group, SiteID = NodeSite)) %>%
-       filter(tagsAtNode != 0) %>%
-       mutate(detEff = round(detEff,2)) %>%
-       select(SiteID, Node, `Unique Tags` = tagsAtNode,
-              `Est. Tags` = estTagsAtNode, `Detection Efficiency` = detEff) 
-   })  
    
-   
-  #  
-  #  # estimated det. eff. by site
+   # estimated det. eff. by site
    # output$est_tags_site <- renderTable({
    #   tmp_df <- dat() %>%
    #     #filter(!Node%in%c("COCA0","COCB0","BSCA0","BSCB0", "IMNAHR")) %>%
@@ -772,37 +769,36 @@ function(input, output) {
    #      #           select(TagID)
    #     #) %>%
    #     mutate(Node = gsub("A0", "B0", Node)) %>% # calculates efficiency at the site level
-   #     identity()
-   # 
-   #   tmp_df %>%
-   #     #mutate(Obs_location = ifelse(grepl("IR", Node), "Instream", "Ladder")) %>%
-   #     #group_by(Mark.Species, Obs_location) %>%
-   #     group_by(Mark.Species) %>%
-   #     do(nodeEfficiency(.,direction="Upstream")) %>%
-   #     arrange(Mark.Species, NodeOrder) %>%
-   #     mutate(det_eff = Recaps/Marks, #ifelse(!grepl('IMNAHW', Node), Recaps/Marks, 1.00),
-   #            se_eff = (1/Marks^2)*(Marks*det_eff)*(1-det_eff),
-   #            N_tags = Unique_tags/det_eff,
-   #            se_N = sqrt(((Marks+1)*(Unique_tags+1)*(Marks - Recaps) * (Unique_tags - Recaps))/ ((Recaps+1)^2 * (Recaps+2))),
-   #            lwr_N = N_tags - 1.96*se_N,
-   #            upr_N = N_tags + 1.96*se_N,
-   #            N_up = lag(N_tags),
-   #            Conversion = ifelse(N_tags/N_up*100 > 100, 100 , round(N_tags/N_up*100)),
-   #            Conversion = paste0(Conversion,"%"),
    #            SiteID = gsub("B0", "", Node)
-   #     ) %>%
-   #     ungroup() %>%
-   #     select(Species = Mark.Species, SiteID, `Unique Tags` = Unique_tags, Marks, Recaps,
-   #            `Detection Efficiency` = det_eff, `Estimated Tags` = N_tags,
-   #            `Lower 95CI` = lwr_N, `Upper 95CI` = upr_N) %>%
-   #     filter(SiteID != 'IR5')
-   # })
-  #  
-  #  
-  # 
-  #--------------------------------
-  # Raw data
-  #--------------------------------
+
+
+   
+# PDF Reports ----
+   
+
+output$reports <- downloadHandler(
+  
+  filename = function(){
+    paste0(gsub(" ","_",input$pdf_reports),
+           "_",
+           gsub("-","_",Sys.Date()),
+           ".html")
+  },
+  
+ content = function(file){
+   # 
+   # tempReport <- file.path(tempdir(), "documents/2019_Chinook_Bull_report.Rmd")
+   # file.copy("report.Rmd", tempReport, overwrite = TRUE)
+   
+   tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
+   
+   rmarkdown::render(tempReport, output_file = file)#,
+                 #    envir = new.env(parent = globalenv()))
+ }
+)
+   
+# Raw data ----
+
 
   # rawdat <- reactive({input$rawdata})
   #  
@@ -837,7 +833,7 @@ function(input, output) {
 
     filename = function() {
       #paste0(rawdat(),"_", Sys.Date(), "_.csv")
-      paste0("observations","_", Sys.Date(), "_.csv")
+      paste0("observations","_", Sys.Date(), ".csv")
     },
     content = function(filename) {
       write.csv(dat_all(), filename, row.names = FALSE)

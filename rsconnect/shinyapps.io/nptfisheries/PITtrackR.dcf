@@ -5,8 +5,8 @@ account: nptfisheries
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 351529
-bundleId: 2136953
+bundleId: 2142469
 url: https://nptfisheries.shinyapps.io/PITtrackR/
-when: 1559878479.4547
+when: 1560171606.04315
 asMultiple: FALSE
 asStatic: FALSE
