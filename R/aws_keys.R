@@ -5,8 +5,13 @@
 #------------------------------------------------------------------------------
 
 setKeys <- function(){
-  access_key <- "AKIAIDHDNCDATLJLBRQQ"
-  secret_key <- "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"
+  # access_key <- "AKIAIDHDNCDATLJLBRQQ"
+  # secret_key <- "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"
+  
+   access_key <- "AKIAUM3ZNN5GRD6SDEM2"
+   secret_key <- "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"
+  
+  
   region <- "us-west-2"
   
   Sys.setenv("AWS_ACCESS_KEY_ID" = access_key,
