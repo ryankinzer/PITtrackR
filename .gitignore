@@ -2,4 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-scripts/aws_keys.R
+R/aws_keys.R
