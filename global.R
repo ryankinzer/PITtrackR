@@ -14,7 +14,7 @@ library(scales)
 library(WriteXLS)
 #library(viridis)
 
-source('R/aws_keys.R')
+source('R/aws_keys.R') # removed keys for repo and added to gitignore
 source('R/queryWindowCnts.R')
 source('R/data_loading_fnc.R')
 load("data/config_data_20190531.rda")
