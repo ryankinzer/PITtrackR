@@ -13,10 +13,11 @@ header <- dashboardHeader(
 side <- dashboardSidebar(
   
   sidebarMenu(
-    menuItem("Snake Basin Summary", startExpanded = TRUE,
+    #menuItem("Snake Basin Summary", startExpanded = TRUE,
              
              #span(helpText('Please select a return year and press "Load Data".'),
              #     style = "color:red;padding-left:20px;"),
+    menuItem("Data Selection", tabName = 'data',icon = icon("fish"), startExpanded = TRUE,
              selectInput('rtn_year', "Spawn Year:",
                          choices = c(2018:year(Sys.Date())),
                          selected = year(Sys.Date())),
@@ -41,30 +42,17 @@ side <- dashboardSidebar(
              #div(style="display:inline-block",actionButton("loadData", "Load Data")),
              actionButton("loadData", "Load/Refresh Data", width="87%", class = "btn btn-primary"),
              span(textOutput("loaded"),style="display:inline-block;
-       color:red;padding-left:52px; padding-top:5px; padding-bottom:5px;"),
+       color:red;padding-left:52px; padding-top:5px; padding-bottom:5px;")
              #div(style="display:inline-block",textOutput("loaded")),
              #withSpinner(textOutput("loaded")),             
              
+    ), 
              
-             
-      menuSubItem("Lower Granite Observations", tabName = 'dams', selected = TRUE),
-      menuSubItem("Snake Basin Tag Observations", tabName = 'basin')
-      ),
-      
-    menuItem("Watershed Summaries", # startExpanded = TRUE,
-      menuSubItem("Watershed Observations", tabName = 'watershed'),    
-      radioButtons('pit_spp', "Watershed Species:", inline = TRUE,
-                   choices = c('Chinook', "Bull Trout"),
-                   selected = 'Chinook'),
-      uiOutput("watershed_menu"),
-      uiOutput("tagid_menu"),
-      menuSubItem("Watershed Reports"),
-      selectInput("pdf_reports", "Watershed Reports:", 
-                  choices = c('Imnaha River'), selected = 'Imnaha River'),
-      downloadButton("reports", label = 'Generate Report')
-    ),
-    
-    menuItem('Raw Data', tabName = 'data') #startExpanded = TRUE,
+      menuItem("Lower Granite Observations", tabName = 'dams', icon = icon("line-chart"), selected = TRUE),
+      menuItem("Snake Basin Summary", tabName = 'basin', icon = icon("bar-chart")),
+      menuItem("Watershed Summaries", tabName = 'watershed', icon = icon("pie-chart")),
+      menuItem('Raw Data', tabName = 'data', icon = icon("table")),
+      menuItem('Download Reports', tabName = 'reports', icon = icon("file-download"))
     )
 )
 
@@ -150,6 +138,16 @@ body <- dashboardBody(
       )
       ),
       tabItem("watershed",
+              fluidRow(
+                       box(solidHeader = TRUE, status = 'primary',
+                           title = 'Watershed Summary Selections',
+                           uiOutput("watershed_menu"),
+                           radioButtons('pit_spp', "Species of Interest:", inline = TRUE,
+                                    choices = c('Chinook', "Bull Trout"),
+                                    selected = 'Chinook')
+                       )
+              ),
+              
             fluidRow(
                 column(6,
                        box(width = NULL, solidHeader= TRUE, status = 'primary',
@@ -184,6 +182,7 @@ body <- dashboardBody(
               column(12,
                   box(width = NULL, solidHeader = TRUE, status = 'primary', 
                       title = 'Migratory patterns through watershed reaches.',
+                      uiOutput("tagid_menu"),
                       plotOutput("mig_plot", width = "100%")
                     )
                 )
@@ -195,6 +194,14 @@ body <- dashboardBody(
             #             selected = 'Processed Observations'),
             downloadButton('data_export', "Export Data"),
             DT::DTOutput('raw_data'),style = "height:800px; overflow-y: scroll;overflow-x: scroll;"
+            ),
+    tabItem('reports',
+            box(solidHeader = TRUE, status = 'primary',
+                title = 'Select Watershed Report',
+                selectInput("pdf_reports", "Available Reports:", 
+                            choices = c('Imnaha River'), selected = 'Imnaha River'),
+                downloadButton("reports", label = 'Download Report')
+            )
             )
     )
   )      

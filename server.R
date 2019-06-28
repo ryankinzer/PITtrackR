@@ -416,7 +416,7 @@ function(input, output) {
    })
    
    output$watershed_menu <- renderUI({
-      selectInput('watershed', "Watershed:",
+      selectInput('watershed', "Selected Watershed:",
                   choices = watersheds(),
                   selected = 'ImnahaRiver',
                   multiple = FALSE
@@ -448,7 +448,7 @@ function(input, output) {
      tag_ids <- tag_ids() %>%
        pull()
      
-     selectInput('tag_id', "Unique Tag IDs:", tag_ids, multiple=TRUE, selectize=FALSE, size = 5
+     selectInput('tag_id', "Unique Tag IDs:", tag_ids, selected = tag_ids[1], multiple=TRUE, selectize=FALSE, size = 5
      )
    })
    
@@ -790,8 +790,15 @@ output$reports <- downloadHandler(
    # tempReport <- file.path(tempdir(), "documents/2019_Chinook_Bull_report.Rmd")
    # file.copy("report.Rmd", tempReport, overwrite = TRUE)
    
-   tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
-   
+   #tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
+   filename = "2019_Chinook_Bull_report.Rmd"
+   url <- paste0("https://raw.githubusercontent.com/ryankinzer/Imnaha_PITtracking/master/documents/",filename)
+   #tempReport <- file.path(tempdir(),filename)
+   tempReport <- paste0(tempdir(),"\\",filename)
+   #file.copy(url, tempReport, overwrite = TRUE)
+   download.file(url, tempReport, overwrite = TRUE)
+  # download.file(url, tempReport)
+
    rmarkdown::render(tempReport, output_file = file)#,
                  #    envir = new.env(parent = globalenv()))
  }
