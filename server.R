@@ -787,17 +787,16 @@ output$reports <- downloadHandler(
   
  content = function(file){
    # 
-   # tempReport <- file.path(tempdir(), "documents/2019_Chinook_Bull_report.Rmd")
+   #tempReport <- file.path(tempdir(), "documents/2019_Chinook_Bull_report.Rmd")
    # file.copy("report.Rmd", tempReport, overwrite = TRUE)
    
-   #tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
-   filename = "2019_Chinook_Bull_report.Rmd"
-   url <- paste0("https://raw.githubusercontent.com/ryankinzer/Imnaha_PITtracking/master/documents/",filename)
+   tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
+   #filename = "2019_Chinook_Bull_report.Rmd"
+   #url <- paste0("https://raw.githubusercontent.com/ryankinzer/Imnaha_PITtracking/master/documents/",filename)
    #tempReport <- file.path(tempdir(),filename)
-   tempReport <- paste0(tempdir(),"\\",filename)
+   #tempReport <- paste0(tempdir(),"\\",filename) # works on local
    #file.copy(url, tempReport, overwrite = TRUE)
-   download.file(url, tempReport, overwrite = TRUE)
-  # download.file(url, tempReport)
+   #download.file(url, tempReport, overwrite = TRUE) # works on local
 
    rmarkdown::render(tempReport, output_file = file)#,
                  #    envir = new.env(parent = globalenv()))
