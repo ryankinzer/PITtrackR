@@ -80,15 +80,17 @@ body <- dashboardBody(
               column(4,
                      box(width = NULL, solidHeader = TRUE, status = 'primary',
                          title = 'Newly Tagged Adults Released from Lower Granite',
-                         plotOutput("gra_tagged")))
-              ),
-            fluidRow(
+                         plotOutput("gra_tagged"))),
               column(12,
                      box(width = NULL, height = 1100, solidHeader = TRUE, status = 'primary',
                          title = 'Daily Tag Detections at Lower Granite',
-                         plotOutput("release_plot", height = 1000)))
-            )
-
+                         plotOutput("release_plot", height = 1000))),
+              
+              column(12,
+                     box(width = NULL, solidHeader = TRUE, status = 'primary',
+                         title = 'Cumulative arrival of adults tagged as juveniles to Lower Granite',
+                         plotOutput("gra_arrival", height = 1000)))
+              )
     ),
     tabItem("basin",
             fluidRow(
@@ -104,18 +106,16 @@ body <- dashboardBody(
             ),
 
       fluidRow(
-            column(7,
+            column(6,
                    box(width = NULL, solidHeader = TRUE, status = 'primary',
                        title = 'Tags observed at each detection site.',
-                       leafletOutput("map", width = '100%', height = 540)
+                       leafletOutput("map", width = '100%')#, height = 540)
                        )
                    ),
-            column(5,
+            column(6,
                    box(width = NULL, solidHeader = TRUE, status = 'primary',
-                       title = 'Total tags observed in sub-basins.',
-                       DT::DTOutput('site_tags')
-                     )
-                   )
+                       title = 'Cumulative arrival of tags to each sub-basin.',
+                       plotOutput('basin_arrival')))
             ),
       fluidRow(
           column(6,
@@ -127,7 +127,11 @@ body <- dashboardBody(
                  box(width = NULL, solidHeader = TRUE, status = 'primary',
                      title = 'Travel time from Lower Granite to sub-basins.',
                  plotOutput('basin_travel'))),
-          column(12,
+          column(6,
+                 box(width = NULL, solidHeader = TRUE, status = 'primary',
+                     title = 'Total tags observed in sub-basins.',
+                     DT::DTOutput('site_tags'))),
+          column(6,
                  box(width = NULL, solidHeader = TRUE, status = 'primary',
                      title = 'Estimated tags and site detection efficiencies.',
                      DT::DTOutput("basin_est_tags")))
@@ -145,6 +149,10 @@ body <- dashboardBody(
                            radioButtons('pit_spp', "Species of Interest:", inline = TRUE,
                                     choices = c('Chinook', "Bull Trout"),
                                     selected = 'Chinook')
+                       ),
+                      
+                      column(4,
+                              valueBoxOutput("watershed_tags", width = NULL)
                        )
               ),
               

@@ -40,7 +40,9 @@ function(input, output) {
                                          input$rtn_year,
                                          #2019,
                                          "_chs_bull")) %>%
-      left_join(site_loc, by = 'SiteID')
+      left_join(site_loc, by = 'SiteID') %>%
+      mutate(Node = fct_relevel(Node, node_vec),
+             SiteID = fct_relevel(SiteID, site_vec))
     # })
   }) 
   
@@ -166,6 +168,28 @@ function(input, output) {
       theme(legend.position = 'none')
   })
   
+  # Cumlative Arrival
+  output$gra_arrival <- renderPlot({
+    
+    dat_all() %>%
+      filter(Mark.Species == input$basin_spp) %>%
+      filter(SiteID == 'GRA') %>%
+      filter(Release.Site.Code != 'LGRLDR') %>%
+      filter(Origin == 'Hat') %>%
+      group_by(TagID, Mark.Species, Origin, Release.Site.Code) %>%
+      summarise(minObs = min(firstObsDateTime)) %>%
+      ggplot(aes(x = minObs, colour = Origin)) +
+      stat_ecdf() +
+      #geom_histogram(colour = 'black')+
+      scale_colour_brewer(palette = 'Set1') +
+      facet_wrap(~Release.Site.Code, ncol = 3, drop = TRUE) +
+      labs(x = 'Date',
+           y = 'Observed Tags') +
+      theme_bw() +
+      theme(legend.position = 'bottom')
+    
+  })
+  
 # GRA arrival time plot
   output$release_plot <- renderPlot({
     dat_all() %>%
@@ -263,10 +287,10 @@ function(input, output) {
          setView(lat = 45.8,
                  lng = -116.1,
                  zoom = 7) %>%
-         setMaxBounds(lng1 = -119,
-                      lat1 = 42,
-                      lng2 = -114,
-                      lat2 = 49) %>%
+         # setMaxBounds(lng1 = -119,
+         #              lat1 = 42,
+         #              lng2 = -114,
+         #              lat2 = 49) %>%
          #addProviderTiles(providers$OpenStreetMap)
          addProviderTiles(providers$Esri.WorldTopoMap) %>%
          addScaleBar(position = 'topright') %>%
@@ -313,7 +337,8 @@ function(input, output) {
        group_by(Mark.Species, Origin, Group) %>%
        summarise(n = n_distinct(TagID)) %>%     
        select(Species = Mark.Species,
-              Group,
+              Origin,
+              `Sub-basin` = Group,
               `Unique Tags` = n)
    })  
    
@@ -354,6 +379,26 @@ function(input, output) {
        scale_fill_brewer(palette = 'Set1') +
        facet_wrap(~Reach) +
        labs(x = 'Travel Time (days)',
+            y = 'Observed Tags') +
+       theme_bw() +
+       theme(legend.position = 'bottom')
+     
+   })
+   
+# Cumlative Arrival
+   output$basin_arrival <- renderPlot({
+     
+     dat_all() %>%
+       filter(Mark.Species == input$basin_spp) %>%
+       filter(!is.na(Group)) %>%
+       group_by(TagID, Mark.Species, Origin, Group) %>%
+       summarise(minObs = min(firstObsDateTime)) %>%
+       ggplot(aes(x = minObs, colour = Origin)) +
+       stat_ecdf() +
+       #geom_histogram(colour = 'black')+
+       scale_colour_brewer(palette = 'Set1') +
+       facet_wrap(~Group) +
+       labs(x = 'Date',
             y = 'Observed Tags') +
        theme_bw() +
        theme(legend.position = 'bottom')
@@ -433,6 +478,21 @@ function(input, output) {
          #pull()
    })
    
+   output$watershed_tags <- renderValueBox({
+     
+      n <- length(tag_ids()%>%pull())
+       
+       valueBox(
+         value = prettyNum(n, big.mark = ","),
+         color = 'green',
+         icon = icon("fish"),
+         subtitle = paste0("Unique tags observed in the watershed.")
+       )
+   })  
+  
+   
+   
+   
 # Watershed and species only data
    dat <- reactive({
      # inner_join(dat_all(),tag_ids(), by = 'TagID') %>%
@@ -479,14 +539,16 @@ function(input, output) {
    
 # Watershed travel time plot
    output$watershed_travel <- renderPlot({
+     
      tmp2 <- dat() %>%
        filter(!is.na(Group)) %>%
-       group_by(TagID, Origin, Group, SiteID) %>%
+       #mutate(Group = ifelse(is.na(Group), 'GRA', Group)) %>%
+       group_by(TagID, Origin, SiteID, Node) %>%
        summarise(minObsDate = min(firstObsDateTime)) %>%
        ungroup() %>%
        group_by(TagID) %>%
        mutate(dwnObsDate = lag(minObsDate),
-              Reach = paste0(lag(SiteID)," - ", SiteID),
+              Reach = paste0(lag(Node)," - ", Node),
               TravelTime = difftime(minObsDate, dwnObsDate, units = 'days'))
       
      tmp2 %>%
@@ -781,7 +843,7 @@ output$reports <- downloadHandler(
   filename = function(){
     paste0(gsub(" ","_",input$pdf_reports),
            "_",
-           gsub("-","_",Sys.Date()),
+           format(Sys.time(), "%m_%d_%y_%H%M%S"),
            ".html")
   },
   

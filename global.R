@@ -19,6 +19,15 @@ source('R/queryWindowCnts.R')
 source('R/data_loading_fnc.R')
 load("data/config_data_20190531.rda")
 
+# need to order factor levels of nodes and sites
+node_vec <- node_order %>%
+  arrange(BranchNum, NodeOrder) %>%
+  pull(Node)
+
+site_vec <- node_order %>%
+  arrange(BranchNum, NodeOrder) %>%
+  pull(NodeSite)
+
 site_loc <- my_config %>%
   distinct(SiteID, Latitude, Longitude)
 
