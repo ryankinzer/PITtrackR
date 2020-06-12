@@ -22,8 +22,8 @@ side <- dashboardSidebar(
                          choices = c(2018:year(Sys.Date())),
                          selected = year(Sys.Date())),
              radioButtons('basin_spp', "Species:", inline = TRUE,
-                          choices = 'Chinook',#c('Chinook','Coho', 'Steelhead'),
-                          selected = NULL),
+                          choices = 'Chinook', #c('Chinook','Coho', 'Steelhead', 'Sockeye'),
+                          selected = 'Chinook'),
              
              # withBusyIndicatorUI(
              #   div(style="display:inline-block",
