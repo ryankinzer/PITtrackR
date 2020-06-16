@@ -17,7 +17,8 @@ library(WriteXLS)
 source('R/aws_keys.R') # removed keys for repo and added to gitignore
 source('R/queryWindowCnts.R')
 source('R/data_loading_fnc.R')
-load("data/config_data_20190531.rda")
+#load("data/config_data_20190531.rda")
+load("data/config_data_20200612.rda")
 
 # need to order factor levels of nodes and sites
 node_vec <- node_order %>%
@@ -29,7 +30,7 @@ site_vec <- node_order %>%
   pull(NodeSite)
 
 site_loc <- my_config %>%
-  distinct(SiteID, Latitude, Longitude)
+  distinct(SiteID, Latitude, Longitude, RKMTotal)
 
 # Set amazon pass codes
 

@@ -19,10 +19,10 @@ side <- dashboardSidebar(
              #     style = "color:red;padding-left:20px;"),
     menuItem("Data Selection", tabName = 'data',icon = icon("fish"), startExpanded = TRUE,
              selectInput('rtn_year', "Spawn Year:",
-                         choices = c(2018:year(Sys.Date())),
+                         choices = c(2010:year(Sys.Date())),
                          selected = year(Sys.Date())),
              radioButtons('basin_spp', "Species:", inline = TRUE,
-                          choices = 'Chinook', #c('Chinook','Coho', 'Steelhead', 'Sockeye'),
+                          choices = c('Chinook','Coho', 'Steelhead', 'Sockeye'),
                           selected = 'Chinook'),
              
              # withBusyIndicatorUI(
@@ -82,14 +82,13 @@ body <- dashboardBody(
                          title = 'Newly Tagged Adults Released from Lower Granite',
                          plotOutput("gra_tagged"))),
               column(12,
-                     box(width = NULL, height = 1100, solidHeader = TRUE, status = 'primary',
-                         title = 'Daily Tag Detections at Lower Granite',
-                         plotOutput("release_plot", height = 1000))),
-              
-              column(12,
                      box(width = NULL, solidHeader = TRUE, status = 'primary',
                          title = 'Cumulative arrival of adults tagged as juveniles to Lower Granite',
-                         plotOutput("gra_arrival", height = 1000)))
+                         plotOutput("gra_arrival", height = 1000))),
+              column(12,
+                     box(width = NULL, height = 1100, solidHeader = TRUE, status = 'primary',
+                         title = 'Daily Tag Detections at Lower Granite',
+                         plotOutput("release_plot", height = 1000)))
               )
     ),
     tabItem("basin",
@@ -145,10 +144,10 @@ body <- dashboardBody(
               fluidRow(
                        box(solidHeader = TRUE, status = 'primary',
                            title = 'Watershed Summary Selections',
-                           uiOutput("watershed_menu"),
-                           radioButtons('pit_spp', "Species of Interest:", inline = TRUE,
-                                    choices = c('Chinook', "Bull Trout"),
-                                    selected = 'Chinook')
+                           uiOutput("watershed_menu")
+                           #radioButtons('pit_spp', "Species of Interest:", inline = TRUE,
+                           #        choices = c('Chinook', "Bull Trout"),
+                           #        selected = 'Chinook')
                        ),
                       
                       column(4,

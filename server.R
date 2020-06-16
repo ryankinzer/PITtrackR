@@ -15,8 +15,9 @@ function(input, output) {
   window_df <- eventReactive(input$loadData, {
     
     if(input$basin_spp == 'Chinook'){spp <- c('fc', 'fcj')}
-    #if(input$basin_spp == 'Coho'){spp <- c('fk', 'fkj')}
-    #if(input$basin_spp == 'Steelhead'){spp <- c('fs', 'fsw')}
+    if(input$basin_spp == 'Coho'){spp <- c('fk', 'fkj')}
+    if(input$basin_spp == 'Steelhead'){spp <- c('fs', 'fsw')}
+    if(input$basin_spp == 'Sockeye'){spp <- c('fb')}
     
     queryWindowCnts(dam = 'LWG', #input$hydro_locs,
                     spp_code = spp, #c('fc', 'fcj', 'fk', 'fkj', 'fs', 'fsw'),
@@ -28,24 +29,53 @@ function(input, output) {
       mutate(spp = gsub("_"," ",spp))#Chinook:Wild_Steelhead)
   })
   
+
+  
+  
   # Loads processed data from Amazon and subsets by selected species
   # Data loads from Amazon S3 bucket after year is selected
-  
+  # 
   dat_all <- eventReactive(input$loadData, {
-    
+
     #withBusyIndicatorServer("loadData", {
-  aws.s3::s3read_using(FUN = read_csv,
-                         bucket = "nptfisheries-pittracking",
-                         object = paste0("PITcleanr_",
-                                         input$rtn_year,
-                                         #2019,
-                                         "_chs_bull")) %>%
+    
+  # load data from aws and PTAGIS ftp
+  # aws.s3::s3read_using(FUN = read_csv,
+  #                        bucket = "nptfisheries-pittracking",
+  #                        object = paste0("PITcleanr_",
+  #                                        input$rtn_year,
+  #                                        #2019,
+  #                                        "_chs_bull")) %>%
+    # left_join(site_loc, by = 'SiteID') %>%
+    #   mutate(Node = fct_relevel(Node, node_vec),
+    #          SiteID = fct_relevel(SiteID, site_vec)) %>%
+    #   left_join(tmp_mark, by = c('TagID' = 'tag_id'))
+    
+  # Load data from DART 
+  tmp_ls <- processDART_LGR(species = input$basin_spp,
+                                  spawnYear = input$rtn_year,
+                                  configuration = my_config,
+                                  truncate = T)
+    
+  tmp_mark <- tmp_ls$dart_obs %>%
+    select(tag_id, mark_date, file_id, mark_site, rel_site, rel_date, t_rear_type, t_species, t_run, length, trans_status, trans_proj, trans_year) %>%
+    distinct()
+  
+  dat_all <- tmp_ls$proc_ch %>%
       left_join(site_loc, by = 'SiteID') %>%
       mutate(Node = fct_relevel(Node, node_vec),
-             SiteID = fct_relevel(SiteID, site_vec))
-    # })
-  }) 
+             SiteID = fct_relevel(SiteID, site_vec),
+             Group = as.character(Group)) %>%
+    left_join(tmp_mark, by = c('TagID' = 'tag_id')) %>%
+    mutate(t_species = input$basin_spp) %>%
+    ungroup()
   
+  return(dat_all)
+
+    # })
+  })
+  
+
   
 # Lower Granite Tab ----
   output$windowCnts_grp1 <- renderValueBox({
@@ -107,16 +137,16 @@ function(input, output) {
     dat_all() %>%
       #dat_all %>%
       filter(SiteID == "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      filter(!is.na(Release.Site.Code)) %>%
-      filter(Release.Site.Code != 'LGRLDR') %>%
-      mutate(Release.Year = year(Release.Date)) %>%
-      group_by(Mark.Species, Origin, Release.Site.Code, Release.Year) %>%
+      #filter(grepl(input$basin_spp, Mark.Species)) %>%
+      filter(!is.na(rel_site)) %>%
+      #filter(Release.Site.Code != 'LGRLDR') %>%
+      mutate(rel_year = year(rel_date)) %>%
+      group_by(t_species, t_rear_type, rel_site, rel_year) %>%
       summarise(n = n_distinct(TagID)) %>%
-      ggplot(aes(x = Release.Site.Code, y = n, fill = as.factor(Release.Year))) +
+      ggplot(aes(x = rel_site, y = n, fill = as.factor(rel_year))) +
       geom_col(colour = 'black') +
       coord_flip() +
-      facet_wrap(~Origin, scales = 'free') +
+      facet_wrap(~ t_rear_type, scales = 'free') +
       scale_fill_brewer(palette = 'Set1') +
       labs(x = 'Observed Tags',
            y = 'Release Site',
@@ -152,12 +182,12 @@ function(input, output) {
     dat_all() %>%
       #dat_all %>%
       filter(SiteID == "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      filter(Release.Site.Code == 'LGRLDR') %>%
-      mutate(Release.Year = year(Release.Date)) %>%
-      group_by(Mark.Species, Origin, Release.Site.Code, Release.Year) %>%
+      #filter(grepl(input$basin_spp, t_species)) %>%
+      filter(mark_site == 'LGRLDR') %>%
+      mutate(rel_year = year(rel_date)) %>%
+      group_by(t_species, t_rear_type, rel_site, rel_year) %>%
       summarise(n = n_distinct(TagID)) %>%
-      ggplot(aes(x = Origin, y = n, fill = Origin)) +
+      ggplot(aes(x = t_rear_type, y = n, fill = t_rear_type)) +
       geom_col(colour = 'black') +
       #facet_wrap(~Origin, scales = 'free') +
       scale_fill_brewer(palette = 'Set1') +
@@ -172,17 +202,17 @@ function(input, output) {
   output$gra_arrival <- renderPlot({
     
     dat_all() %>%
-      filter(Mark.Species == input$basin_spp) %>%
+      #filter(Mark.Species == input$basin_spp) %>%
       filter(SiteID == 'GRA') %>%
-      filter(Release.Site.Code != 'LGRLDR') %>%
-      filter(Origin == 'Hat') %>%
-      group_by(TagID, Mark.Species, Origin, Release.Site.Code) %>%
-      summarise(minObs = min(firstObsDateTime)) %>%
-      ggplot(aes(x = minObs, colour = Origin)) +
+      filter(rel_site != 'LGRLDR') %>%
+      filter(t_rear_type == 'H') %>%
+      group_by(TagID, t_species, t_rear_type, rel_site) %>%
+      #summarise(minObs = min(firstObsDateTime)) %>%
+      ggplot(aes(x = TrapDate, colour = t_rear_type)) +
       stat_ecdf() +
       #geom_histogram(colour = 'black')+
       scale_colour_brewer(palette = 'Set1') +
-      facet_wrap(~Release.Site.Code, ncol = 3, drop = TRUE) +
+      facet_wrap(~rel_site, ncol = 3, drop = TRUE) +
       labs(x = 'Date',
            y = 'Observed Tags') +
       theme_bw() +
@@ -195,18 +225,17 @@ function(input, output) {
     dat_all() %>%
      #dat_all %>%
       filter(SiteID == "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      filter(grepl('Chinook', Mark.Species)) %>%
-      filter(Release.Site.Code != 'LGRLDR') %>%
-      filter(Origin == 'Hat') %>%
-      mutate(Release.Year = year(Release.Date),
-             ObsDate = as.Date(firstObsDateTime)) %>%
-      group_by(Release.Site.Code, Release.Year, Origin, ObsDate) %>%
+      #filter(grepl(input$basin_spp, Mark.Species)) %>%
+      #filter(grepl('Chinook', Mark.Species)) %>%
+      filter(rel_site != 'LGRLDR') %>%
+      filter(t_rear_type == 'H') %>%
+      mutate(rel_year = year(rel_date)) %>%
+      group_by(rel_site, rel_year, t_rear_type, TrapDate) %>%
       summarise(n = n_distinct(TagID)) %>%
-      ggplot(aes(x = ObsDate, y = n, fill = as.factor(Release.Year))) +
+      ggplot(aes(x = TrapDate, y = n, fill = as.factor(rel_year))) +
       geom_col(colour = 'black') +
       #scale_x_datetime(labels = date_format("%d-%m"), breaks = "1 week") +
-      facet_wrap( ~ Release.Site.Code, ncol = 3, drop = TRUE) +
+      facet_wrap( ~ rel_site, ncol = 3, drop = TRUE) +
       scale_fill_brewer(palette = 'Set1') +
       labs(x = 'Arrival Date',
            y = 'Observed Tags',
@@ -221,8 +250,8 @@ function(input, output) {
   output$tagsGRA <- renderValueBox({
     n <- dat_all() %>%
       filter(SiteID == "GRA") %>%
-      filter(grepl(input$basin_spp,Mark.Species)) %>%
-      mutate(n = n_distinct(TagID)) %>%
+      #filter(grepl(input$basin_spp,Mark.Species)) %>%
+      summarise(n = n_distinct(TagID)) %>%
       pull(n)
     
     valueBox(
@@ -236,8 +265,8 @@ function(input, output) {
     
     n <- dat_all() %>%
       filter(SiteID != "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      mutate(n = n_distinct(TagID)) %>%
+      #filter(grepl(input$basin_spp, Mark.Species)) %>%
+      summarise(n = n_distinct(TagID)) %>%
       pull(n)
     
     valueBox(
@@ -251,14 +280,14 @@ function(input, output) {
     
     n <- dat_all() %>%
       filter(SiteID == "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      mutate(n = n_distinct(TagID)) %>%
+      #filter(grepl(input$basin_spp, Mark.Species)) %>%
+      summarise(n = n_distinct(TagID)) %>%
       pull(n)
     
     o <- dat_all() %>%
       filter(SiteID != "GRA") %>%
-      filter(grepl(input$basin_spp, Mark.Species)) %>%
-      mutate(n = n_distinct(TagID)) %>%
+      #filter(grepl(input$basin_spp, Mark.Species)) %>%
+      summarise(n = n_distinct(TagID)) %>%
       pull(n)
     
     p <- paste0(round((o/n)*100),"%")
@@ -274,8 +303,8 @@ function(input, output) {
 # Basin Map Data ----
    map_dat <- eventReactive(input$loadData, {
      dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
-       group_by(Mark.Species, SiteID, Latitude, Longitude) %>%
+       #filter(Mark.Species == input$basin_spp) %>%
+       group_by(t_species, SiteID, Latitude, Longitude) %>%
        summarise(n = n_distinct(TagID)) %>%
        ungroup()
    })
@@ -332,12 +361,12 @@ function(input, output) {
  # Basin unique tags per group table  
    output$site_tags <- DT::renderDT({
      dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
+       #filter(Mark.Species == input$basin_spp) %>%
      mutate(Group = ifelse(is.na(Group),'GRA', Group)) %>%
-       group_by(Mark.Species, Origin, Group) %>%
+       group_by(t_species, t_rear_type, Group) %>%
        summarise(n = n_distinct(TagID)) %>%     
-       select(Species = Mark.Species,
-              Origin,
+       select(Species = t_species,
+              t_rear_type,
               `Sub-basin` = Group,
               `Unique Tags` = n)
    })  
@@ -345,10 +374,10 @@ function(input, output) {
  # Basin unique tags per site  
    output$basin_tag_plot <- renderPlot({
      dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
+       #filter(Mark.Species == input$basin_spp) %>%
      filter(!is.na(Group)) %>%
-       distinct(Mark.Species, Origin, Group, SiteID, TagID) %>%
-       ggplot(aes(x = SiteID, colour = Origin, fill = Origin)) +
+       distinct(t_species, t_rear_type, Group, SiteID, TagID) %>%
+       ggplot(aes(x = SiteID, colour = t_rear_type, fill = t_rear_type)) +
        geom_bar(colour = 'black') +
        scale_fill_brewer(palette = 'Set1') +
        facet_wrap(~Group, scales = 'free') +
@@ -360,11 +389,11 @@ function(input, output) {
    output$basin_travel <- renderPlot({
      
      tmp2 <- dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
-     arrange(TagID, firstObsDateTime) %>%
+       #filter(Mark.Species == input$basin_spp) %>%
+     arrange(TagID, ObsDate) %>%
        mutate(Group = ifelse(is.na(Group),"GRA", Group)) %>%
-       group_by(TagID,Origin, Group, SiteID) %>%
-       summarise(minObsDate = min(firstObsDateTime)) %>%
+       group_by(TagID,t_rear_type, Group, SiteID) %>%
+       summarise(minObsDate = min(ObsDate)) %>%
        ungroup() %>%
        group_by(TagID) %>%
        mutate(dwnObsDate = lag(minObsDate),
@@ -373,11 +402,11 @@ function(input, output) {
      
      tmp2 %>%
        filter(!is.na(TravelTime),
-              grepl("GRA - ",Reach))%>%
-       ggplot(aes(x = TravelTime, fill = Origin)) +
+              grepl("GRA - ", Reach))%>%
+       ggplot(aes(x = TravelTime, fill = t_rear_type)) +
        geom_histogram(colour = 'black')+
        scale_fill_brewer(palette = 'Set1') +
-       facet_wrap(~Reach) +
+       facet_wrap(~ Reach) +
        labs(x = 'Travel Time (days)',
             y = 'Observed Tags') +
        theme_bw() +
@@ -389,11 +418,11 @@ function(input, output) {
    output$basin_arrival <- renderPlot({
      
      dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
+       #filter(Mark.Species == input$basin_spp) %>%
        filter(!is.na(Group)) %>%
-       group_by(TagID, Mark.Species, Origin, Group) %>%
-       summarise(minObs = min(firstObsDateTime)) %>%
-       ggplot(aes(x = minObs, colour = Origin)) +
+       group_by(TagID, t_species, t_rear_type, Group) %>%
+       summarise(minObs = min(ObsDate)) %>%
+       ggplot(aes(x = minObs, colour = t_rear_type)) +
        stat_ecdf() +
        #geom_histogram(colour = 'black')+
        scale_colour_brewer(palette = 'Set1') +
@@ -410,7 +439,7 @@ function(input, output) {
    output$basin_est_tags <- DT::renderDT({
      
      dat_all() %>%
-       filter(Mark.Species == input$basin_spp) %>%
+      # filter(Mark.Species == input$basin_spp) %>%
        estNodeEff(node_order = node_order) %>%
        left_join(node_order %>%
                    select(Node, Group, SiteID = NodeSite)) %>%
@@ -453,7 +482,7 @@ function(input, output) {
    
    watersheds <- reactive({
     w <- dat_all() %>%
-          filter(Mark.Species == input$pit_spp) %>%
+          #filter(Mark.Species == input$pit_spp) %>%
           distinct(Group) %>%
           pull()
      
@@ -472,7 +501,7 @@ function(input, output) {
 # Get unique tag_ids for selected watershed and species
    tag_ids <- reactive({
       dat_all() %>%
-       filter(Mark.Species == input$pit_spp) %>%
+       #filter(Mark.Species == input$pit_spp) %>%
        filter(Group == input$watershed) %>%
         distinct(TagID)# %>%
          #pull()
@@ -497,7 +526,7 @@ function(input, output) {
    dat <- reactive({
      # inner_join(dat_all(),tag_ids(), by = 'TagID') %>%
         dat_all() %>%
-        filter(Mark.Species == input$pit_spp) %>%
+        #filter(Mark.Species == input$pit_spp) %>%
         filter(Group == input$watershed)
    })
 
@@ -520,9 +549,9 @@ function(input, output) {
 # Watershed Arrival time plot 
    output$arrival_plot <- renderPlot({
      dat() %>%
-       group_by(TagID, Mark.Species, Origin, Release.Site.Code, SiteID) %>%
-       slice(which.min(lastObsDateTime)) %>%
-       ggplot(aes(x=lastObsDateTime, fill=Origin)) +
+       group_by(TagID, t_species, t_rear_type, rel_site, SiteID) %>%
+       slice(which.min(ObsDate)) %>%
+       ggplot(aes(x=ObsDate, fill = t_rear_type)) +
        geom_histogram(colour = 'black', bins = 100) +
        #geom_vline(xintercept = as.numeric(ymd_hms("20180611 15:00:00")), linetype=2)+
        scale_fill_brewer(palette = 'Set1') +
@@ -543,8 +572,8 @@ function(input, output) {
      tmp2 <- dat() %>%
        filter(!is.na(Group)) %>%
        #mutate(Group = ifelse(is.na(Group), 'GRA', Group)) %>%
-       group_by(TagID, Origin, SiteID, Node) %>%
-       summarise(minObsDate = min(firstObsDateTime)) %>%
+       group_by(TagID, t_rear_type, SiteID, Node) %>%
+       summarise(minObsDate = min(ObsDate)) %>%
        ungroup() %>%
        group_by(TagID) %>%
        mutate(dwnObsDate = lag(minObsDate),
@@ -553,7 +582,7 @@ function(input, output) {
       
      tmp2 %>%
        filter(!is.na(TravelTime))%>%
-       ggplot(aes(x = TravelTime, fill = Origin)) +
+       ggplot(aes(x = TravelTime, fill = t_rear_type)) +
        geom_histogram()+
        scale_fill_brewer(palette = 'Set1') +
        facet_wrap(~Reach) +
@@ -568,9 +597,9 @@ function(input, output) {
 # Watershed unique tags per site
    output$unique_tags_site <- DT::renderDT({
      dat() %>%
-       group_by(Mark.Species, Origin, Release.Site.Code, SiteID) %>%
+       group_by(t_species, t_rear_type, rel_site, SiteID) %>%
        summarise(Unique_Tags = n_distinct(TagID)) %>%
-       select(Species = Mark.Species, Origin, `Release Site` = Release.Site.Code, SiteID, `Unique Tags` = Unique_Tags)
+       select(Species = t_species, Origin = t_rear_type, `Release Site` = rel_site, SiteID, `Unique Tags` = Unique_Tags)
    })
 
 # Watershed Detection Eff.  
@@ -593,7 +622,7 @@ function(input, output) {
      if(is.null(input$tag_id)){
        return()
      } else {
-       lims <- c(min(dat()$firstObsDateTime), Sys.time())
+       lims <- c(min(dat()$ObsDate), Sys.time())
        tmp_tag <- selected_tag_ids()
        
        axis_labs <- dat() %>%
@@ -611,8 +640,8 @@ function(input, output) {
          filter(TagID %in% tmp_tag) %>%
          filter(SiteID != 'GRA') %>%
          group_by(TagID, SiteID, Migration, Direction) %>% #new
-         slice(which.min(firstObsDateTime)) %>% #new
-         ggplot(aes(x = firstObsDateTime, y = RKMTotal, group = TagID, colour = Release.Site.Code), drop = TRUE) +
+         slice(which.min(ObsDate)) %>% #new
+         ggplot(aes(x = ObsDate, y = RKMTotal, group = TagID, colour = rel_site), drop = TRUE) +
          #geom_polygon(data = above_weir) +
          geom_line() +
          geom_point() +
