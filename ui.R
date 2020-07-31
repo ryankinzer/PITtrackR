@@ -11,30 +11,15 @@ header <- dashboardHeader(
 
 # Side Bar ----
 side <- dashboardSidebar(
-  
+  tags$script(src='javascript.js'),
   sidebarMenu(
     #menuItem("Snake Basin Summary", startExpanded = TRUE,
              
              #span(helpText('Please select a return year and press "Load Data".'),
              #     style = "color:red;padding-left:20px;"),
     menuItem("Data Selection", tabName = 'data',icon = icon("fish"), startExpanded = TRUE,
-             selectInput('rtn_year', "Spawn Year:",
-                         choices = c(2010:year(Sys.Date())),
-                         selected = year(Sys.Date())),
-             radioButtons('basin_spp', "Species:", inline = TRUE,
-                          choices = c('Chinook','Coho', 'Steelhead', 'Sockeye'),
-                          selected = 'Chinook'),
-             
-             # withBusyIndicatorUI(
-             #   div(style="display:inline-block",
-             #   actionButton(
-             #     "loadData",
-             #     "Load Data",
-             #     class = "btn-primary"
-             #   )
-             #   )
-             # ),
-             
+             uiOutput("rtn_year_menu"),
+             uiOutput("spp_menu"),
              tags$head(
                tags$style(HTML('#loadData{background-color:lightblue}'))
              ),
@@ -52,14 +37,17 @@ side <- dashboardSidebar(
       menuItem("Snake Basin Summary", tabName = 'basin', icon = icon("bar-chart")),
       menuItem("Watershed Summaries", tabName = 'watershed', icon = icon("pie-chart")),
       menuItem('Raw Data', tabName = 'data', icon = icon("table")),
-      menuItem('Download Reports', tabName = 'reports', icon = icon("file-download"))
+      #menuItem('Download Reports', tabName = 'reports', icon = icon("file-download")),
+    div(class = 'busy',
+        img(src="kus_spinner.gif", height= 'auto', width = '100%'))
     )
 )
 
 
 # Body ----
 body <- dashboardBody(
-
+  includeCSS('./www/styles.css'),
+  br(), br(), br(),
   tabItems(
     tabItem("dams",
             fluidRow(
@@ -69,26 +57,30 @@ body <- dashboardBody(
                      valueBoxOutput("windowCnts_grp2", width = NULL))
             ),
             fluidRow(
-              column(4, 
+              column(6, 
                      box(width = NULL, solidHeader = TRUE, status = 'primary',
                             title = 'Previously Tagged Adults Observed at Lower Granite',
-                            plotOutput("release_grp"))),
-              column(4,
+                            plotOutput("release_grp", height = 400))),
+              column(6,
                      box(width = NULL, solidHeader = TRUE, status = 'primary',
                             title = 'Lower Granite Window Count',
-                            plotOutput("window_plot"))),
-              column(4,
-                     box(width = NULL, solidHeader = TRUE, status = 'primary',
-                         title = 'Newly Tagged Adults Released from Lower Granite',
-                         plotOutput("gra_tagged"))),
+                            plotOutput("window_plot", height = 400))),
+              # column(4,
+              #        box(width = NULL, solidHeader = TRUE, status = 'primary',
+              #            title = 'Newly Tagged Adults Released from Lower Granite',
+              #            plotOutput("gra_tagged"))),
               column(12,
                      box(width = NULL, solidHeader = TRUE, status = 'primary',
-                         title = 'Cumulative arrival of adults tagged as juveniles to Lower Granite',
-                         plotOutput("gra_arrival", height = 1000))),
+                         title = 'Previously Tagged Adults Observed at Lower Granite',
+                         DT::DTOutput('rel_tag_grp'))),
               column(12,
-                     box(width = NULL, height = 1100, solidHeader = TRUE, status = 'primary',
-                         title = 'Daily Tag Detections at Lower Granite',
-                         plotOutput("release_plot", height = 1000)))
+                     box(width = NULL, solidHeader = TRUE, status = 'primary',
+                         title = 'Cumulative arrival of adults tagged as hatchery juveniles to Lower Granite',
+                         plotOutput("gra_arrival", height = 1000)))
+              # column(12,
+              #        box(width = NULL, height = 1100, solidHeader = TRUE, status = 'primary',
+              #            title = 'Daily Tag Detections at Lower Granite',
+              #            plotOutput("release_plot", height = 1000)))
               )
     ),
     tabItem("basin",
@@ -201,15 +193,15 @@ body <- dashboardBody(
             #             selected = 'Processed Observations'),
             downloadButton('data_export', "Export Data"),
             DT::DTOutput('raw_data'),style = "height:800px; overflow-y: scroll;overflow-x: scroll;"
-            ),
-    tabItem('reports',
-            box(solidHeader = TRUE, status = 'primary',
-                title = 'Select Watershed Report',
-                selectInput("pdf_reports", "Available Reports:", 
-                            choices = c('Imnaha River'), selected = 'Imnaha River'),
-                downloadButton("reports", label = 'Download Report')
-            )
-            )
+            )#,
+    # tabItem('reports',
+    #         box(solidHeader = TRUE, status = 'primary',
+    #             title = 'Select Watershed Report',
+    #             selectInput("pdf_reports", "Available Reports:", 
+    #                         choices = c('Imnaha River'), selected = 'Imnaha River'),
+    #             downloadButton("reports", label = 'Download Report')
+    #         )
+    #         )
     )
   )      
 

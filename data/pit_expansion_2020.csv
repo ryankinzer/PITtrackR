@@ -1,0 +1,173 @@
+hatchery,rel_group,mig_year,hat_release,pit_rel,pit_ral,ral_exp,rel_site
+McCall,SFSR-Knox,2006,"1,094,264","51,895","34,489",31.2,KNOXB
+McCall,SFSR-Knox,2007,"1,087,170","51,726","34,534",31.0,KNOXB
+McCall,SFSR-Knox,2008,"1,060,540","51,678","36,239",28.8,KNOXB
+Rapid River,Rapid R. Hat,2006,"2,530,528","96,975","34,537",71.5,RAPH
+Rapid River,Rapid R. Hat,2007,"2,396,602","109,675","34,731",66.8,RAPH
+Rapid River,Rapid R. Hat,2008,"2,493,719","117,587","102,074",24.3,RAPH
+Dworshak,NF-DHFH,2006,"1,007,738","92,548","34,490",27.5,DWORNF
+Dworshak,NF-DHFH,2007,"963,211","104,193","31,174",28.6,DWORNF
+Dworshak,NF-DHFH,2008,"939,000","49,384","34,729",26.6,DWORNF
+Clearwater Hat.,Powell,2006,"423,633","14,967","13,470",31.3,POWP
+Clearwater Hat.,Powell,2007,"373,977","14,971","13,474",27.6,POWP
+Clearwater Hat.,Powell,2008,"223,714","33,741","31,341",7.1,POWP
+Clearwater Hat.,Red,2006,"423,603","14,973","13,476",31.3,REDR
+Clearwater Hat.,Red,2007,"375,759","14,978","13,480",27.8,REDR
+Clearwater Hat.,Red,2008,"424,719","11,985","10,805",39.2,REDR
+Clearwater Hat.,Crooked,2006,"608,472","14,978","13,480",45.0,#N/A
+Clearwater Hat.,Crooked,2007,"517,092","14,969","13,472",38.3,#N/A
+Clearwater Hat.,Crooked,2008,"566,752","11,987","10,789",52.4,#N/A
+Clearwater Hat.,Selway,2006,"209,842",0,0,0.0,SELWY1
+Clearwater Hat.,Selway,2007,"179,432",0,0,0.0,SELWY1
+Clearwater Hat.,Selway,2008,"205,659","8,974","8,095",25.3,SELWY1
+Sawtooth,Weir,2007,"995,262","14,970","13,473",73.8,SAWT
+Sawtooth,Weir,2008,"174,132","14,961","13,466",12.8,SAWT
+Pahsimeroi,Ponds,2008,"1,037,772",14833,13350,77.6,PAHP
+Kooskia,Clear Cr,2006,"630,000",800,0,0.0,CLEARC
+Kooskia,Clear Cr,2007,"569,565","9,943","9,892",57.6,CLEARC
+Kooskia,Clear Cr,2008,"649,601","9,935","9,900",65.6,CLEARC
+Sawtooth,Weir,2006,"1,552,444",500,0,0.0,SAWT
+Pahsimeroi,Ponds,2007,"978,463",498,0,0.0,PAHP
+Pahsimeroi,Ponds,2006,"1,073,951",298,0,0.0,PAHP
+McCall,SFSR-Knox,2009,"1,106,700","51,496","36,146",30.2,KNOXB
+Rapid River,Rapid R. Hat,2009,"2,503,711","51,774","36,189",68.8,RAPH
+Dworshak,NF-DHFH,2009,"1,014,748","51,599","36,245",27.6,DWORNF
+Clearwater Hat.,Powell,2009,"404,115","11,985","9,019",44.5,POWP
+Clearwater Hat.,Red,2009,"404,856","15,092","11,356",35.3,REDR
+Clearwater Hat.,Crooked,2009,"703,101","15,089","11,354",61.6,#N/A
+Clearwater Hat.,Selway,2009,"299,707","9,981","7,511",39.6,SELWY1
+Clearwater Hat.,Clear Cr,2009,"234,151","11,556","8,696",26.6,CLEARC
+Sawtooth,Weir,2009,"274,644","18,671","13,503",20.0,SAWT
+Pahsimeroi,Ponds,2009,"870,842","18,750","13,500",64.1,PAHP
+Kooskia,Clear Cr,2009,"603,679","11,580","9,910",60.7,CLEARC
+McCall,SFSR-Knox,2010,"1,037,600","51,875","36,374",28.1,KNOXB
+Rapid River,Rapid R. Hat,2010,"2,492,454","51,939","36,424",68.0,RAPH
+Dworshak,NF-DHFH,2010,"1,109,195","51,880","36,378",30.1,DWORNF
+Clearwater Hat.,Powell,2010,"413,158","18,182","12,728",32.0,POWP
+Clearwater Hat.,Red,2010,"1,206,110","18,175","12,723",94.4,REDR
+Clearwater Hat.,Selway / Ad clip,2010,"402,160","18,188","12,732",31.2,#N/A
+Clearwater Hat.,Clear Cr,2010,"229,605","18,178","12,725",17.6,CLEARC
+Sawtooth,Weir,2010,"1,455,634","16,939","11,877",122.1,SAWT
+Sawtooth,Yankee Fork,2010,"398,444","4,344","3,047",130.3,YANKFK
+Pahsimeroi,Ponds,2010,"1,169,701","21,379","14,965",77.7,PAHP
+Kooskia,Clear Cr,2010,"632,330","14,543","13,791",45.8,CLEARC
+McCall,SFSR-Knox,2011,"1,069,028","51,878","36,415",28.9,KNOXB
+Rapid River,Rapid R. Hat,2011,"2,483,181","51,730","36,331",67.9,RAPH
+Dworshak,NF-DHFH,2011,"1,078,250","51,915","36,407",29.2,DWORNF
+Clearwater Hat.,Powell,2011,"413,757","17,089","11,965",34.2,POWP
+Clearwater Hat.,Red,2011,"1,114,760","17,060","11,939",92.9,REDR
+Clearwater Hat.,Selway / All,2011,"414,270","17,083","11,958",34.2,SELWY1
+Clearwater Hat.,Clear Cr,2011,"291,604","17,095","11,966",23.9,CLEARC
+Clearwater Hat.,Crooked R.,2011,"204,061","25,488","17,841",11.0,CROTRP
+Sawtooth,Weir,2011,"1,337,302","18,968","13,277",100.3,SAWT
+Sawtooth,Yankee Fork,2011,"397,877","2,397","1,678",236.7,YANKFK
+Pahsimeroi,Ponds,2011,"1,030,028","21,131","14,797",69.2,PAHP
+Kooskia,Clear Cr,2011,"657,267","13,932","12,969",50.6,CLEARC
+NPTH,NPTH,2011,"251,625","6,244","5,946",42.3,#N/A
+McCall,SFSR-Knox,2012,"787,088","25,955","18,237",42.7,KNOXB
+Rapid River,Rapid R. Hat,2012,"2,498,197","51,938","36,431",68.1,RAPH
+Dworshak,NF-DHFH,2012,"1,044,080","51,787","35,953",28.6,DWORNF
+Clearwater Hat.,Powell,2012,"407,970","17,121","12,034",33.5,POWP
+Clearwater Hat.,Red,2012,"1,122,939","17,045","11,953",93.5,REDR
+Clearwater Hat.,Selway / All,2012,"415,369","16,978","11,889",34.5,SELWY1
+Clearwater Hat.,Clear Cr,2012,"234,511","17,087","11,964",19.2,CLEARC
+Clearwater Hat.,Crooked R.,2012,"206,317","25,482","17,846",11.1,CROTRP
+Sawtooth,Weir,2012,"1,080,164","18,051","12,635",85.1,SAWT
+Sawtooth,Yankee Fork,2012,"197,036","3,381","2,372",82.6,YANKFK
+Pahsimeroi,Ponds,2012,"847,580","21,362","14,964",56.2,PAHP
+Kooskia,Clear Cr,2012,"619,865","15,022","13,971",44.3,CLEARC
+McCall (Seg),SFSR-Knox,2013,"821,001","27,952","18,152",44.7,KNOXB
+Rapid River,Rapid R. Hat,2013,"2,497,668","51,899","36,370",68.2,RAPH
+Dworshak,NF-DHFH,2013,"1,377,508","51,801","36,372",37.4,DWORNF
+Clearwater Hat.,Powell,2013,"408,421","17,059","11,906",33.9,POWP
+Clearwater Hat.,Red,2013,"1,085,486","16,850","11,856",91.1,REDR
+Clearwater Hat.,Selway / All,2013,"293,663","17,063","12,004",24.0,SELWY1
+Clearwater Hat.,Clear Cr,2013,"378,083","17,083","12,010",31.1,CLEARC
+Clearwater Hat.,Crooked R.,2013,"208,447","25,451","17,825",11.3,CROTRP
+Sawtooth,Weir,2013,"652,732","21,282","14,899",43.4,SAWT
+Pahsimeroi,Ponds,2013,"838,664","21,393","14,975",55.6,PAHP
+Kooskia,Clear Cr,2013,"630,308","14,237","12,781",49.2,KOOS
+McCall (Int),SFSR-Knox,2013,"253,849","25,952","18,208",13.5,KNOXB
+McCall (Int),SFSR-Knox,2012,"241,265","25,962","18,102",12.9,KNOXB
+Imnaha (Volitional),Imnaha Weir,2011,"252,588","20,757","14,570",16.9,IMNAHW
+Imnaha (Volitional),Imnaha Weir,2012,"332,877","14,881","10,430",31.5,IMNAHW
+Imnaha (Direct),Imnaha River,2012,"136,933","5,938","4,120",32.8,IMNAHR
+Imnaha (Volitional),Imnaha Weir,2013,"223,626","11,956","8,367",26.3,IMNAHW
+Imnaha (Direct),Imnaha River,2013,"166,979","8,940","6,272",26.2,IMNAHR
+McCall (Seg),SFSR-Knox,2014,"813,873","27,925","18,175",44.2,KNOXB
+McCall (Int),SFSR-Knox,2014,"234,012","25,947","18,129",12.5,KNOXB
+Rapid River,Rapid R. Hat,2014,"2,498,849","51,974","36,423",68.2,RAPH
+Dworshak,NF-DHFH,2014,"2,040,460","51,762","36,233",55.9,DWORNF
+Clearwater Hat.,Powell (summers),2014,"492,244","25,470","17,830",27.2,POWP
+Clearwater Hat.,Red,2014,"1,190,867","17,082","11,959",99.2,REDR
+Clearwater Hat.,Selway,2014,"410,025","17,085","11,959",33.9,SELWY1
+Clearwater Hat.,Clear Cr ,2014,"800,921","21,887","15,320",51.9,CLEARC
+Sawtooth,Weir,2014,"1,559,698","18,976","13,283",117.0,SAWT
+Pahsimeroi,Ponds,2014,"827,321","21,376","14,963",54.9,PAHP
+Kooskia - Ad,Clear Cr,2014,"628,007","12,261","8,584",72.7,KOOS
+Sawtooth,Yankee Fork,2014,"192,577","2,398","1,679",114.3,YANKFK
+McCall (Seg),SFSR-Knox,2015,"867,469"," 25,937 ","18,125",47.4,KNOXB
+McCall (Int),SFSR-Knox,2015,"254,817"," 25,969 ","18,190",13.6,KNOXB
+Rapid River,Rapid R. Hat,2015,"2,499,975"," 51,931 ","36,390",68.3,RAPH
+Dworshak,NF-DHFH,2015,"1,549,263","41,774","29,292",52.5,DWORNF
+Clearwater Hat.,Powell (summers),2015,"528,380","25,477","17,846",29.2,POWP
+Clearwater Hat.,Red,2015,"1,097,660","17,049","11,933",91.6,REDR
+Clearwater Hat.,Selway,2015,"382,164","17,088","11,962",31.5,SELWY1
+Clearwater Hat.,Clear Cr ,2015,"673,391","9,779","6,846",97.9,CLEARC
+Sawtooth,Weir,2015,"1,348,380","18,861","13,205",101.7,SAWT
+Pahsimeroi,Ponds,2015,"628,975","21,369","14,986",41.5,PAHP
+Kooskia - Ad,Clear Cr,2015,"614,764","5,793","4,085",150.1,KOOS
+Sawtooth,Yankee Fork,2015,"183,379","2,496","1,747",104.5,YANKFK
+McCall (Seg),SFSR-Knox,2016,"874,020"," 25,948 ","18,264",47.4,KNOXB
+McCall (Int),SFSR-Knox,2016,"154,362"," 25,940 ","18,173",8.1,KNOXB
+Rapid River,Rapid R. Hat,2016,"2,505,250"," 51,900 ","36,442",68.3,RAPH
+Dworshak,NF-DHFH,2016,"1,454,208","40,878","28,740",50.2,DWORNF
+Clearwater Hat.,Powell (summers),2016,"244,485","25,468","17,828",13.3,POWP
+Clearwater Hat.,Red,2016,"1,272,709","17,071","11,950",106.1,REDR
+Clearwater Hat.,Selway,2016,"464,568","17,093","11,965",38.4,SELWY1
+Clearwater Hat.,Clear Cr ,2016,"791,578","9,488","6,442",122.4,CLEARC
+Clearwater Hat.,NF Clearwater,2016,"489,072","17,081","11,957",40.5,CLWHNF
+Sawtooth,Weir,2016,"1,462,350","18,845","13,190",110.4,SAWT
+Pahsimeroi,Ponds,2016,"1,040,466","21,331","14,928",69.3,PAHP
+Kooskia ,Clear Cr,2016,"605,115","7,941","5,562",108.4,KOOS
+Sawtooth,Yankee Fork,2016,"189,786","2,494","1,745",108.3,YANKFK
+McCall (Seg),SFSR-Knox,2017,"945,306","25,919","18,143",51.7,KNOXB
+McCall (Int),SFSR-Knox,2017,"162,604","25,938","18,157",8.5,KNOXB
+Rapid River,Rapid R. Hat,2017,"3,016,522","51,902","36,331",82.6,RAPH
+Dworshak,NF-DHFH,2017,"1,498,736","41,916","29,341",50.7,DWORNF
+Clearwater Hat.,Powell (summers),2017,"615,717","25,468","17,828",34.1,POWP
+Clearwater Hat.,Red,2017,"1,289,680","17,082","11,957",107.4,REDR
+Clearwater Hat.,Selway,2017,"483,895","17,073","11,951",40.1,SELWY1
+Clearwater Hat.,Clear Cr ,2017,"768,234","9,584","6,709",114.1,CLEARC
+Clearwater Hat.,NF Clearwater,2017,"389,115","17,067","11,947",32.1,CLWHNF
+Sawtooth,Weir,2017,"1,112,295","21,293","14,905",74.2,SAWT
+Pahsimeroi,Ponds,2017,"1,230,458","21,368","14,958",81.8,PAHP
+Kooskia ,Clear Cr,2017,"628,907","7,910","5,537",113.2,KOOS
+Sawtooth,Yankee Fork,2017,"188,280","2,490","1,743",107.6,YANKFK
+McCall (Seg),SFSR-Knox,2018,"966,210","25,680","17,976",53.3,KNOXB
+McCall (Int),SFSR-Knox,2018,"155,893","25,071","17,550",8.5,KNOXB
+Rapid River,Rapid R. Hat,2018,"2,497,088","51,902","36,331",68.3,RAPH
+Dworshak,NF-DHFH,2018,"1,645,125","39,875","27,913",58.5,DWORNF
+Clearwater Hat.,Powell (summers),2018,"673,181","25,415","17,791",37.4,POWP
+Clearwater Hat.,Red,2018,"1,276,194","17,077","11,954",106.3,REDR
+Clearwater Hat.,Selway,2018,"451,416","17,072","11,950",37.3,SELWY1
+Clearwater Hat.,Clear Cr ,2018,"818,037","8,689","6,082",134.1,CLEARC
+Clearwater Hat.,NF Clearwater,2018,"544,153","17,069","11,948",45.1,CLWHNF
+Sawtooth,Weir,2018,"1,934,882","18,880","13,216",146.0,SAWT
+Pahsimeroi,Ponds,2018,"990,412","21,221","14,855",66.2,PAHP
+Kooskia ,Clear Cr,2018,"358,958","7,418","5,193",68.7,KOOS
+Sawtooth,Yankee Fork,2018,"272,798","2,473","1,731",157.2,YANKFK
+McCall (Seg),SFSR-Knox,2019,"947,076","25,876","18,113",51.9,KNOXB
+McCall (Int),SFSR-Knox,2019,"159,911","25,808","18,066",8.4,KNOXB
+Rapid River,Rapid R. Hat,2019,"2,504,018","51,428","36,000",69.1,RAPH
+Dworshak,NF-DHFH,2019,"1,716,951","41,945","29,362",58.0,DWORNF
+Clearwater Hat.,Powell (summers),2019,"624,403","25,389","17,772",34.7,POWP
+Clearwater Hat.,Red,2019,"606,686","8,461","5,923",102.0,REDR
+Clearwater Hat.,Selway,2019,"402,570","17,029","11,920",33.3,SELWY1
+Clearwater Hat.,Clear Cr ,2019,"691,051","9,741","6,819",100.9,CLEARC
+Clearwater Hat.,NF Clearwater,2019,"544,153","17,065","11,946",45.1,CLWHNF
+Clearwater Hat.,RedR NF Clearwater,2019,"574,038","8,600","6,020",94.9,CLWHNF
+Sawtooth,Weir,2019,"919,070","18,880","13,216",69.1,SAWT
+Pahsimeroi,Ponds,2019,"733,083","21,221","14,855",48.9,PAHP
+Kooskia ,Clear Cr,2019,"654,664","7,908","5,536",117.8,KOOS
+Sawtooth,Yankee Fork,2019,"94,366","2,473","1,731",54.1,YANKFK

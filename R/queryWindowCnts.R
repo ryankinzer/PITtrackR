@@ -128,10 +128,10 @@ queryWindowCnts = function(dam = c('LWG', 'WFF', 'BON', 'TDA', 'JDA', 'MCN', 'IH
     tidyr::spread(Species, win_cnt, fill = 0)
   
   
-  if(grepl('Steelhead', spp_name)) {
+  if(grepl('Steelhead', spp_name[1])) {
     win_cnts = win_cnts %>%
-      dplyr::filter(Date >= ymd(paste(spawn_yr - 1, start_day)),
-                    Date <= ymd(paste(spawn_yr, end_day)))
+      dplyr::filter(Date >= ymd(paste(spawn_yr - 1, '0701')),
+                    Date <= ymd(paste(spawn_yr, '0630')))
   }
   
   return(win_cnts)

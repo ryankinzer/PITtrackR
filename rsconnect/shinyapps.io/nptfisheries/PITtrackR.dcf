@@ -5,8 +5,9 @@ account: nptfisheries
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 351529
-bundleId: 2221753
+bundleId: 3461134
 url: https://nptfisheries.shinyapps.io/PITtrackR/
-when: 1562849910.83397
+when: 1596232632.65084
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: data/config_data_20190531.rda|data/config_data_20200612.rda|documents/2019_Chinook_Bull_report.Rmd|R/aws_keys.R|R/data_loading_fnc.R
