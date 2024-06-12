@@ -111,9 +111,11 @@ observeEvent(input$loadData, {
            trans_proj, trans_year) %>%
       distinct()
     
-    dat_all <<- tmp_ls$compress_obs %>%
+    dat_all <- tmp_ls$compress_obs %>%
+      rename(site_code = node) %>%
+      mutate(site_code = gsub('_D|_U|_M', '', site_code)) %>%
       left_join(site_loc, by = 'site_code') %>%
-       mutate(node = fct_relevel(node, node_vec),
+       mutate(#node = fct_relevel(node, node_vec),
             site_code = fct_relevel(site_code, site_vec)) %>%
       left_join(site_grp %>%
                   select(site_code = node,
