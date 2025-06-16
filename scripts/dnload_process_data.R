@@ -3,7 +3,7 @@
 # Modified: 5/31/19
 # Updated: 6/16/2025
 
-library(tidyverse)
+library(dplyr)
 
 spp <- 'Chinook'
 yr <- '2025'
