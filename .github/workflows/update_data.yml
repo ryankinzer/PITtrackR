@@ -21,7 +21,7 @@ jobs:
           GITHUB_PAT: ${{ secrets.GH_PAT }}
         run: |
           install.packages("remotes")
-          remotes::install_cran("tidyverse")
+          remotes::install_cran(c("dplyr", "stringr", "forcats"))
           remotes::install_github("KevinSee/PITcleanr@develop")
         shell: Rscript {0}
 

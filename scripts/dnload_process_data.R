@@ -99,12 +99,12 @@ tmp_mark <- tmp_ls$dart_obs %>%
 tmp_compress <- tmp_ls$compress_obs
 
 dat_all <<- tmp_compress %>%
-  mutate(site_code = str_split(node, '_', simplify = TRUE)[,1]) %>%
+  mutate(site_code = stringr::str_split(node, '_', simplify = TRUE)[,1]) %>%
   left_join(node_order, by = 'node') %>%
   left_join(site_grp %>% select(-node_order), by = c('site_code' = 'node')) %>%
   left_join(site_loc, by = 'site_code') %>%
-  mutate(node = fct_relevel(node, node_vec),
-         site_code = fct_relevel(site_code, site_vec),
+  mutate(node = forcats::fct_relevel(node, node_vec),
+         site_code = forcats::fct_relevel(site_code, site_vec),
          grp = as.character(grp)) %>%
   left_join(tmp_mark, by = 'tag_code') %>%
   mutate(species = spp,
