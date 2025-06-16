@@ -18,7 +18,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("your-packages", "needed", "for", "processing"))
+          install.packages(c("tidyverse", "remotes"))
+          remotes::install_github("KevinSee/PITcleanr", ref = "develop")
+          library(tidyverse)
         shell: Rscript {0}
 
       - name: Run data update script
