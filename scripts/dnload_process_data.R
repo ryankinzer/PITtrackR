@@ -19,7 +19,9 @@ site_order <- PITcleanr::buildNodeOrder(parent_child)
 saveRDS(site_order, file = './data/node_order.rds')
 saveRDS(parent_child, file = './data/parent_child.rds')
 
-pc_nodes = parent_child %>% addParentChildNodes(.,  configuration = configuration)
+pc_nodes = parent_child %>% 
+  PITcleanr::addParentChildNodes(.,  configuration = configuration)
+
 saveRDS(pc_nodes, file = './data/pc_nodes.rds')
 
 
@@ -83,7 +85,7 @@ node_vec <- node_order %>%
 # Get Dart obs for most recent year and add to previous years.
 
  
-tmp_ls <- compressDART(species = spp,
+tmp_ls <- PITcleanr::compressDART(species = spp,
                         loc = 'GRA',
                         spawn_year = yr,
                         configuration = configuration)
