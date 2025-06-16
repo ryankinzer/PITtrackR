@@ -25,10 +25,28 @@ jobs:
             libcurl4-openssl-dev \
             libssl-dev \
             libxml2-dev \
-            libgit2-dev
+            libfontconfig1-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev \
+            libgit2-dev \
+            gdal-bin \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libudunits2-dev \
+            libglpk-dev \
+            libv8-dev
 
     - name: Install dependencies
       run: |
+        install.packages("remotes")
+        remotes::install_cran(c("dplyr", "stringr", "forcats", "DT", "ggraph", "httr",
+        "knitr", "leaflet", "lubridate", "rmarkdown", "scales", "sf", "shiny", "shinydashboard", "shinyjs", "stringr", "tidyr", "tidyverse")
+        )
         install.packages("rsconnect")
       shell: Rscript {0}
 

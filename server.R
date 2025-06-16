@@ -734,21 +734,21 @@ observeEvent(input$watershed,{
 
 # PDF Reports ----
    
-
-output$reports <- downloadHandler(
-  
-  filename = function(){
-    paste0(gsub(" ","_",input$pdf_reports),
-           "_",
-           format(Sys.time(), "%m_%d_%y_%H%M%S"),
-           ".html")
-  },
-  
- content = function(file){
-   tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
-   rmarkdown::render(tempReport, output_file = file)
- }
-)
+# 
+# output$reports <- downloadHandler(
+#   
+#   filename = function(){
+#     paste0(gsub(" ","_",input$pdf_reports),
+#            "_",
+#            format(Sys.time(), "%m_%d_%y_%H%M%S"),
+#            ".html")
+#   },
+#   
+#  content = function(file){
+#    tempReport <- "documents/2019_Chinook_Bull_report.Rmd"
+#    rmarkdown::render(tempReport, output_file = file)
+#  }
+# )
    
 # Raw data ----
 
