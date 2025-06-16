@@ -41,6 +41,8 @@ jobs:
         library(rsconnect)
         rsconnect::setAccountInfo(name = Sys.getenv("SHINYAPPS_NAME"),
                           token = Sys.getenv("SHINYAPPS_TOKEN"),
-                          secret = Sys.getenv("SHINYAPPS_SECRET"))
+                          secret = Sys.getenv("SHINYAPPS_SECRET"),
+                          server = "shinyapps.io"
+                          )
         rsconnect::deployApp(appDir = ".", appName = "PITtrackR")  # <-- change appName as needed
       shell: Rscript {0}
