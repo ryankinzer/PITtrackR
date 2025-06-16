@@ -18,9 +18,7 @@ side <- dashboardSidebar(
              #span(helpText('Please select a return year and press "Load Data".'),
              #     style = "color:red;padding-left:20px;"),
     menuItem("Data Selection", tabName = 'data',icon = icon("fish"), startExpanded = TRUE,
-             radioButtons('basin_spp', "Species:", inline = TRUE,
-                  choices = c('Chinook','Coho', 'Steelhead', 'Sockeye'),
-                  selected = 'Chinook'),
+             uiOutput("spp_menu"),
              uiOutput("rtn_year_menu"),
              tags$head(
                tags$style(HTML('#loadData{background-color:lightblue}'))
