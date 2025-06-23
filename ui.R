@@ -39,7 +39,10 @@ side <- dashboardSidebar(
       menuItem('Raw Data', tabName = 'data', icon = icon("table")),
       #menuItem('Download Reports', tabName = 'reports', icon = icon("file-download")),
     div(class = 'busy',
-        img(src="kus_spinner.gif", height= 'auto', width = '100%'))
+        img(src="kus_spinner.gif", height= 'auto', width = '100%')),
+    br(), br(), br(),
+    p(paste0('Updated: ', round(Sys.time())),
+    style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;")
     )
 )
 
