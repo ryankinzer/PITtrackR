@@ -43,14 +43,16 @@ jobs:
             libglpk-dev \
             libv8-dev
 
-    - name: Install dependencies
+    - name: Install renv and rsconnect
       run: |
-        install.packages("remotes")
-        remotes::install_cran(c("dplyr", "stringr", "forcats", "DT", "ggraph", "httr",
-        "knitr", "leaflet", "lubridate", "rmarkdown", "scales", "sf", "shiny", "shinydashboard", "shinyjs", "stringr", "tidyr", "tidyverse")
-        )
-        install.packages("rsconnect")
+        install.packages(c("renv", "rsconnect"))
       shell: Rscript {0}
+
+    - name: Restore R packages from renv.lock
+      run: |
+        renv::restore()
+      shell: Rscript {0}
+
 
     - name: Deploy PITtrackR App to shinyapps.io
       env:
