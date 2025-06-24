@@ -41,7 +41,7 @@ side <- dashboardSidebar(
     div(class = 'busy',
         img(src="kus_spinner.gif", height= 'auto', width = '100%')),
     br(), br(), br(),
-    p(paste0('Updated: ', round(Sys.time())),
+    p(textOutput("deploy_time"),
     style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;")
     )
 )

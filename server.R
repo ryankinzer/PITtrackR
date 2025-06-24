@@ -1,6 +1,12 @@
 # Server Logic ----
 function(input, output) {
 
+  output$deploy_time <- renderText({
+    dt <- as.POSIXct(readLines("deploy_time.txt"), tz = "UTC")
+    dt_boise <- format(dt, tz = "America/Boise", usetz = TRUE, "%B %d, %Y at %I:%M %p %Z")
+    paste("Updated:", dt_boise)
+  })
+  
   showModal(modalDialog(
     title = "PITtrackR Use Agreement",
     "The PITtrackR web application uses live data obtained from Columbia Basin Research group at the University of Washington's School of Aquatic and Fisheries Science, and through their DART website. Please be patient while available data is received and processed."

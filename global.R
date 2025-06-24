@@ -27,3 +27,7 @@ node_order <<- readRDS('./data/node_order.rds')
 pc_nodes <- readRDS('./data/pc_nodes.rds')  
 load('data/dat_all.rda')
 print('dat_all loaded')
+
+if (!file.exists("deploy_time.txt")) {
+  writeLines(as.character(round(Sys.time())), "deploy_time.txt")
+}
