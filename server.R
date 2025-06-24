@@ -617,7 +617,8 @@ observeEvent(input$watershed,{
      dat %>%
        group_by(tag_code, species, mark_rear_type_name, rel_site, site_code) %>%
        slice(which.min(min_det)) %>%
-       ggplot(aes(x=min_det, fill = mark_rear_type_name)) +
+       mutate(d_obs = floor_date(min_det, unit = 'days')) %>%
+       ggplot(aes(x=d_obs, fill = mark_rear_type_name)) +
        geom_histogram(colour = 'black', bins = 100) +
        #geom_vline(xintercept = as.numeric(ymd_hms("20180611 15:00:00")), linetype=2)+
        scale_fill_brewer(palette = 'Set1') +
