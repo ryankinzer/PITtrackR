@@ -6,7 +6,7 @@
 library(dplyr)
 
 spp <- 'Chinook'
-yr <- '2025'
+yr <- '2026'
 
 # Get site config data
 load('data/site_config_LGR_20250416.rda')
